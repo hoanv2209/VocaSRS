@@ -1,0 +1,75 @@
+﻿@model DashboardResponseModel
+
+<style>
+    table {
+        width: 100%;
+    }
+
+    table, th, td {
+        border: 1px solid black;
+        border-collapse: collapse;
+    }
+
+    .number {
+        font-size: 50px;
+    }
+</style>
+
+<div class="text-center pb-5">
+    <h1 class="display-4">Welcome to VocaSRS</h1>
+</div>
+
+<table class="text-center">
+    <tr>
+        <td colspan="3">
+            <p>Total words</p>
+            <p class="number">
+                @Model.TotalVocabularies
+            </p>
+        </td>
+        <td colspan="3">
+            <p>Memorized words</p>
+            <p class="number">
+                @Model.MemorizedVocabularies
+            </p>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <p>Unseen</p>
+            <p class="number">
+                @Model.UnseenVocabularies
+            </p>
+        </td>
+        <td>
+            <p>1st review</p>
+            <p class="number">
+                @Model.FirstReviewVocabularies
+            </p>
+        </td>
+        <td>
+            <p>2nd review</p>
+            <p class="number">
+                @Model.SecondReviewVocabularies
+            </p>
+        </td>
+        <td>
+            <p>3rd review</p>
+            <p class="number">
+                @Model.ThirdReviewVocabularies
+            </p>
+        </td>
+        <td>
+            <p>4th review</p>
+            <p class="number">
+                @Model.FourthReviewVocabularies
+            </p>
+        </td>
+        <td>
+            <p>5th review</p>
+            <p class="number">
+                @Model.FifthReviewVocabularies
+            </p>
+        </td>
+    </tr>
+</table>

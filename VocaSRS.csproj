@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Content Remove="C:\Users\Hoa Nguyen\.nuget\packages\datatables.net-buttons-bs5\2.3.3\contentFiles\any\any\wwwroot\css\buttons.bootstrap5.css" />
+    <Content Remove="C:\Users\Hoa Nguyen\.nuget\packages\datatables.net-buttons-bs5\2.3.3\contentFiles\any\any\wwwroot\css\buttons.bootstrap5.min.css" />
+    <Content Remove="C:\Users\Hoa Nguyen\.nuget\packages\datatables.net-buttons-bs5\2.3.3\contentFiles\any\any\wwwroot\js\buttons.bootstrap5.js" />
+    <Content Remove="C:\Users\Hoa Nguyen\.nuget\packages\datatables.net-buttons-bs5\2.3.3\contentFiles\any\any\wwwroot\js\buttons.bootstrap5.min.js" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="6.0.11" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="6.0.11" />
+  </ItemGroup>
+
+</Project>

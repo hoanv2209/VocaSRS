@@ -1,0 +1,17 @@
+﻿@model VocabularyRequestModel
+
+<form method="post" asp-controller="Vocabulary" asp-action="Add">
+  <div class="form-group pb-3">
+    <label>Sentence</label>
+    <input type="text" class="form-control" placeholder="Enter Sentence" asp-for="Sentence">
+  </div>
+  <div class="form-group pb-3">
+    <label>Native Word</label>
+    <input type="text" class="form-control" placeholder="Enter native word" asp-for="NativeWord">
+  </div>
+  <div class="form-group pb-3">
+    <label>Foreign Word</label>
+    <input type="text" class="form-control" placeholder="Enter foreign word" asp-for="ForeignWord">
+  </div>
+  <button type="submit" class="btn btn-primary">Submit</button>
+</form>

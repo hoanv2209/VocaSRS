@@ -1,0 +1,34 @@
+﻿@model PracticeRequestModel
+@{
+    PracticeResponseModel vocabulary = ViewBag.Vocabulary;
+}
+
+<form method="post" asp-controller="Home" asp-action="Practice">
+    @Html.Hidden("Id", vocabulary.Id)
+    @Html.Hidden("NativeWord", vocabulary.NativeWord)
+    @Html.Hidden("NativeSentence", vocabulary.NativeSentence)
+    <div class="alert alert-primary" role="alert">
+        @Html.Raw(vocabulary.MixedSentence)
+    </div>
+    <div class="form-group pb-3">
+        <label>Answer</label>
+        <input type="text" class="form-control" placeholder="Enter answer" asp-for="Answer">
+    </div>
+    <button type="submit" class="btn btn-primary">Submit</button>
+    <button class="btn btn-success" id="btnRead">Read</button>
+    <button class="btn btn-success" id="btnReadSentence">Read Sentence</button>
+</form>
+
+@section Scripts {
+    <script>
+        $("#btnRead").click(() => {
+            let nativeWord = $("#NativeWord").val();
+            responsiveVoice.speak(nativeWord, "US English Male");
+        });
+
+        $("#btnReadSentence").click(() => {
+            let nativeSentence = $("#NativeSentence").val();
+            responsiveVoice.speak(nativeSentence, "US English Male");
+        });
+    </script>
+}
