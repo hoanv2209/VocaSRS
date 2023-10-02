@@ -4,10 +4,10 @@
     {
         public int Id { get; set; }
 
-        public string NativeSentence { get; set; }
+        public string OriginalSentence { get; set; }
 
         public string MixedSentence { get; set; }
 
-        public string NativeWord { get; set; }
+        public string ForeignWord { get; set; }
     }
 }

@@ -3,10 +3,10 @@
     PracticeResponseModel vocabulary = ViewBag.Vocabulary;
 }
 
-<form method="post" asp-controller="Home" asp-action="Practice">
+<form method="post" asp-controller="Home" asp-action="Practice" autocomplete="off">
     @Html.Hidden("Id", vocabulary.Id)
-    @Html.Hidden("NativeWord", vocabulary.NativeWord)
-    @Html.Hidden("NativeSentence", vocabulary.NativeSentence)
+    @Html.Hidden("ForeignWord", vocabulary.ForeignWord)
+    @Html.Hidden("OriginalSentence", vocabulary.OriginalSentence)
     <div class="alert alert-primary" role="alert">
         @Html.Raw(vocabulary.MixedSentence)
     </div>
@@ -21,14 +21,17 @@
 
 @section Scripts {
     <script>
-        $("#btnRead").click(() => {
-            let nativeWord = $("#NativeWord").val();
-            responsiveVoice.speak(nativeWord, "US English Male");
+        $("#btnRead").click((e) => {
+            e.preventDefault();
+            let foreignWord = $("#ForeignWord").val();
+            responsiveVoice.speak(foreignWord, "US English Male");
         });
 
-        $("#btnReadSentence").click(() => {
-            let nativeSentence = $("#NativeSentence").val();
-            responsiveVoice.speak(nativeSentence, "US English Male");
+        $("#btnReadSentence").click((e) => {
+            e.preventDefault();
+            let originalSentence = $("#OriginalSentence").val();
+            responsiveVoice.speak(originalSentence, "US English Male");
+            return;
         });
     </script>
 }

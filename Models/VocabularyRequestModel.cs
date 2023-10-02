@@ -2,7 +2,9 @@
 {
     public class VocabularyRequestModel
     {
-        public string Sentence { get; set; }
+        public string RightSideSentence { get; set; }
+
+        public string LeftSideSentence { get; set; }
 
         public string NativeWord { get; set; }
 

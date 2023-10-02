@@ -1,4 +1,5 @@
-﻿using VocaSRS.Context;
+﻿using System.Text;
+using VocaSRS.Context;
 using VocaSRS.Context.Entities;
 using VocaSRS.Extensions;
 using VocaSRS.Models;
@@ -8,8 +9,6 @@ namespace VocaSRS.Services
     public interface IVocaService
     {
         DashboardResponseModel GetDashboardInfo();
-
-        IEnumerable<VocabularyResponseModel> GetVocabularies(int pageSize, int skip, string filter);
 
         void AddVocabulary(VocabularyRequestModel model);
 
@@ -42,22 +41,12 @@ namespace VocaSRS.Services
             };
         }
 
-        public IEnumerable<VocabularyResponseModel> GetVocabularies(int pageSize, int skip, string filter)
-        {
-            return _context.Vocabularies.Where(p => p.NativeWord.Contains(filter)).Skip(skip).Take(pageSize).Select(p => new VocabularyResponseModel
-            {
-                Id = p.Id,
-                NativeWord = p.NativeWord,
-                ForeignWord = p.ForeignWord,
-                Sentence = p.Sentence
-            });
-        }
-
         public void AddVocabulary(VocabularyRequestModel model)
         {
             _context.Vocabularies.Add(new Vocabulary
             {
-                Sentence = model.Sentence,
+                LeftSideSentence = model.LeftSideSentence,
+                RightSideSentence = model.RightSideSentence,
                 NativeWord = model.NativeWord,
                 ForeignWord = model.ForeignWord,
                 Status = PracticeStatus.Unseen,
@@ -91,10 +80,41 @@ namespace VocaSRS.Services
             return new PracticeResponseModel
             {
                 Id = word.Id,
-                NativeSentence = String.Format(word.Sentence, word.NativeWord),
-                MixedSentence = String.Format(word.Sentence, word.ForeignWord.HtmlHighLight()),
-                NativeWord = word.NativeWord,
+                OriginalSentence = BuildSentence(word.LeftSideSentence, word.RightSideSentence, word.ForeignWord),
+                MixedSentence = BuildSentence(word.LeftSideSentence, word.RightSideSentence, word.NativeWord.HtmlHighLight()),
+                ForeignWord = word.ForeignWord
             };
+        }
+
+        private string BuildSentence(string left, string right, string vocabulary)
+        {
+            var builder = new StringBuilder();
+
+            var shouldAppendSpace = false;
+
+            if (!string.IsNullOrWhiteSpace(left))
+            {
+                builder.Append(left);
+                shouldAppendSpace = true;
+            }
+
+            if (!string.IsNullOrWhiteSpace(vocabulary))
+            {
+                if (shouldAppendSpace)
+                {
+                    builder.Append(" ");
+                }
+
+                builder.Append(vocabulary);
+            }
+
+            if (!string.IsNullOrWhiteSpace(right))
+            {
+                builder.Append(" ");
+                builder.Append(right);
+            }
+
+            return builder.ToString();
         }
 
         public bool CheckAnswer(PracticeRequestModel model)
@@ -105,7 +125,7 @@ namespace VocaSRS.Services
                 throw new Exception();
             }
 
-            if (vocabulary.NativeWord == model.Answer)
+            if (vocabulary.ForeignWord == model.Answer.Trim())
             {
                 vocabulary.PracticeDate = DateTime.UtcNow.Date;
                 vocabulary.Status = vocabulary.Status.Next();
