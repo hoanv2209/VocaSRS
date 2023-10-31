@@ -1,4 +1,5 @@
 ﻿using System.Text;
+using System.Text.RegularExpressions;
 using VocaSRS.Context;
 using VocaSRS.Context.Entities;
 using VocaSRS.Extensions;
@@ -31,13 +32,13 @@ namespace VocaSRS.Services
             return new DashboardResponseModel()
             {
                 TotalVocabularies = _context.Vocabularies.Count(),
-                MemorizedVocabularies= _context.Vocabularies.Where(p => p.Status == PracticeStatus.Memorized).Count(),
+                MemorizedVocabularies = _context.Vocabularies.Where(p => p.Status == PracticeStatus.Memorized).Count(),
                 UnseenVocabularies = _context.Vocabularies.Where(p => p.Status == PracticeStatus.Unseen).Count(),
                 FirstReviewVocabularies = _context.Vocabularies.Where(p => p.Status == PracticeStatus.First).Count(),
-                SecondReviewVocabularies= _context.Vocabularies.Where(p => p.Status == PracticeStatus.Second).Count(),
-                ThirdReviewVocabularies= _context.Vocabularies.Where(p => p.Status == PracticeStatus.Third).Count(),
-                FourthReviewVocabularies= _context.Vocabularies.Where(p => p.Status == PracticeStatus.Fourth).Count(),
-                FifthReviewVocabularies= _context.Vocabularies.Where(p => p.Status == PracticeStatus.Fifth).Count()
+                SecondReviewVocabularies = _context.Vocabularies.Where(p => p.Status == PracticeStatus.Second).Count(),
+                ThirdReviewVocabularies = _context.Vocabularies.Where(p => p.Status == PracticeStatus.Third).Count(),
+                FourthReviewVocabularies = _context.Vocabularies.Where(p => p.Status == PracticeStatus.Fourth).Count(),
+                FifthReviewVocabularies = _context.Vocabularies.Where(p => p.Status == PracticeStatus.Fifth).Count()
             };
         }
 
@@ -45,13 +46,14 @@ namespace VocaSRS.Services
         {
             _context.Vocabularies.Add(new Vocabulary
             {
-                LeftSideSentence = model.LeftSideSentence,
-                RightSideSentence = model.RightSideSentence,
-                NativeWord = model.NativeWord,
-                ForeignWord = model.ForeignWord,
+                LeftSideSentence = string.IsNullOrEmpty(model.LeftSideSentence) ? string.Empty : model.LeftSideSentence.Trim(),
+                RightSideSentence = string.IsNullOrEmpty(model.RightSideSentence) ? string.Empty : model.RightSideSentence.Trim(),
+                NativeWord = model.NativeWord.Trim(),
+                ForeignWord = model.ForeignWord.Trim(),
                 Status = PracticeStatus.Unseen,
                 PracticeDate = null
             });
+
             _context.SaveChanges();
         }
 
@@ -70,6 +72,7 @@ namespace VocaSRS.Services
                                                 || (p.Status == PracticeStatus.Third && p.PracticeDate <= thirdBoxReviewDate)
                                                 || (p.Status == PracticeStatus.Fourth && p.PracticeDate <= fourthBoxReviewDate)
                                                 || (p.Status == PracticeStatus.Fifth && p.PracticeDate <= fifthBoxReviewDate))
+                                    .OrderBy(p => Guid.NewGuid())
                                     .FirstOrDefault();
 
             if (word == null)
@@ -90,28 +93,25 @@ namespace VocaSRS.Services
         {
             var builder = new StringBuilder();
 
-            var shouldAppendSpace = false;
-
             if (!string.IsNullOrWhiteSpace(left))
             {
-                builder.Append(left);
-                shouldAppendSpace = true;
+                builder.Append(left.Trim());
+                builder.Append(" ");
             }
 
             if (!string.IsNullOrWhiteSpace(vocabulary))
             {
-                if (shouldAppendSpace)
-                {
-                    builder.Append(" ");
-                }
-
                 builder.Append(vocabulary);
             }
 
             if (!string.IsNullOrWhiteSpace(right))
             {
-                builder.Append(" ");
-                builder.Append(right);
+                if (!Regex.IsMatch(right, "^[.?!]*$"))
+                {
+                    builder.Append(" ");
+                }
+
+                builder.Append(right.Trim());
             }
 
             return builder.ToString();
@@ -119,13 +119,9 @@ namespace VocaSRS.Services
 
         public bool CheckAnswer(PracticeRequestModel model)
         {
-            var vocabulary = _context.Vocabularies.SingleOrDefault(p => p.Id == model.Id);
-            if (vocabulary == null)
-            {
-                throw new Exception();
-            }
+            var vocabulary = _context.Vocabularies.Single(p => p.Id == model.Id);
 
-            if (vocabulary.ForeignWord == model.Answer.Trim())
+            if (vocabulary.ForeignWord.ToLower() == model.Answer.ToLower().Trim())
             {
                 vocabulary.PracticeDate = DateTime.UtcNow.Date;
                 vocabulary.Status = vocabulary.Status.Next();
