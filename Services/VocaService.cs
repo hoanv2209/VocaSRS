@@ -7,17 +7,6 @@ using VocaSRS.Models;
 
 namespace VocaSRS.Services
 {
-    public interface IVocaService
-    {
-        DashboardResponseModel GetDashboardInfo();
-
-        void AddVocabulary(VocabularyRequestModel model);
-
-        PracticeResponseModel GetPracticeVocabulary();
-
-        bool CheckAnswer(PracticeRequestModel model);
-    }
-
     public class VocaService : IVocaService
     {
         private readonly VocaContext _context;
@@ -136,6 +125,44 @@ namespace VocaSRS.Services
 
             return false;
         }
-    }
 
+        public void AddParagraph(ParagraphRequestModel model)
+        {
+            _context.Paragraphs.Add(new Paragraph
+            {
+                Title = model.Title.Trim(),
+                Content = model.Content.Trim(),
+                SoundPath = model.FileName.Trim(),
+                Times = 0
+            });
+
+            _context.SaveChanges();
+        }
+
+        public ParagraphResponseModel GetRandomParagraph()
+        {
+            var paragraph = _context.Paragraphs.OrderBy(p => p.Times).FirstOrDefault();
+            if (paragraph == null)
+            {
+                return null;
+            }
+
+            return new ParagraphResponseModel
+            {
+                Id = paragraph.Id,
+                Title = paragraph.Title,
+                Content = paragraph.Content,
+                FileName = paragraph.SoundPath,
+                Times = paragraph.Times
+            };
+        }
+
+        public void IncreaseParagraphPracticeTimes(int id)
+        {
+            var paragraph = _context.Paragraphs.Single(p => p.Id == id);
+            paragraph.Times++;
+
+            _context.SaveChanges();
+        }
+    }
 }

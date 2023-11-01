@@ -3,7 +3,7 @@
     PracticeResponseModel vocabulary = ViewBag.Vocabulary;
 }
 
-<form method="post" asp-controller="Home" asp-action="Practice" autocomplete="off">
+<form method="post" asp-controller="Vocabulary" asp-action="Practice" autocomplete="off">
     @Html.Hidden("Id", vocabulary.Id)
     @Html.Hidden("ForeignWord", vocabulary.ForeignWord)
     @Html.Hidden("OriginalSentence", vocabulary.OriginalSentence)

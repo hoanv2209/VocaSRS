@@ -23,5 +23,24 @@ namespace VocaSRS.Controllers
             _service.AddVocabulary(model);
             return RedirectToAction("Index");
         }
+
+        public IActionResult Practice()
+        {
+            var vocabulary = _service.GetPracticeVocabulary();
+            if (vocabulary == null)
+            {
+                return RedirectToAction("Index");
+            }
+
+            ViewBag.Vocabulary = vocabulary;
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult Practice(PracticeRequestModel model)
+        {
+            _service.CheckAnswer(model);
+            return RedirectToAction("Practice");
+        }
     }
 }

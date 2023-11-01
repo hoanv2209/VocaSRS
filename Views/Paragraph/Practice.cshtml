@@ -1,0 +1,92 @@
+﻿@using System.Text.RegularExpressions;
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    ParagraphResponseModel paragraph = ViewBag.Paragraph;
+    var curWord = string.Empty;
+    var fileName = $"/mp3/{paragraph.FileName}.mp3";
+    char prevCharacter = default;
+}
+
+<div class="alert alert-primary" role="alert">
+    @Html.Raw(paragraph.Title)
+</div>
+<div class="card">
+    <div class="card-header" id="headingOne">
+        <h5 class="mb-0">
+            <button class="btn" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                Script
+            </button>
+        </h5>
+    </div>
+
+    <div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-bs-parent="#accordion">
+        <div class="card-body">
+            @Html.Raw(paragraph.Content)
+        </div>
+    </div>
+</div>
+<div>
+    <audio controls style="width: 100%">
+        <source src="@fileName" type="audio/mpeg">
+    </audio>
+</div>
+<div class="paragraph-content-box">
+    @foreach (var character in paragraph.Content)
+    {
+        if (Regex.IsMatch(character.ToString(), "^[a-zA-Z0-9']$"))
+        {
+            curWord += character;
+        }
+        else
+        {
+            if (!string.IsNullOrEmpty(curWord))
+            {
+                <div class="word">
+                    <input class="word_input" size="@curWord.Length" data-word="@curWord" />
+                </div>
+
+                curWord = string.Empty;
+            }
+            <div class="sign">
+                <span>@Html.Raw(character)</span>
+            </div>
+        }
+
+        prevCharacter = character;
+    }
+
+    @if (!string.IsNullOrEmpty(curWord))
+    {
+        <div class="word">
+            <input class="word_input" size="@curWord.Length" data-word="@curWord" />
+        </div>
+
+        curWord = string.Empty;
+    }
+</div>
+<div class="buttons">
+    <button class="btn btn-primary" id="btnVerify">Verify</button>
+</div>
+
+@section Scripts {
+    <script>
+        $("#btnVerify").click((e) => {
+            e.preventDefault();
+            let words = $(".word_input");
+            for (let i = 0; i < words.length; i++) {
+                let word = $(words[i]);
+                word.removeClass('correct');
+                word.removeClass('incorrect');
+
+                if (word.val().toLowerCase() != word.data('word').toLowerCase()) {
+                    word.addClass('incorrect');
+                }
+                else {
+                    word.addClass('correct');
+                }
+            }
+        });
+    </script>
+}
