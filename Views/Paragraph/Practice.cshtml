@@ -88,5 +88,17 @@
                 }
             }
         });
+
+        let inputs = $(".word_input");
+        inputs.each((i, p) => {
+            $(p).keyup((e) => {
+                if (e.keyCode == 32) {
+                    e.preventDefault();
+                    $(inputs[i]).val($(inputs[i]).val().trim());
+                    let nextIndex = $(inputs[i + 1]);
+                    if (nextIndex) nextIndex.focus();
+                }
+            })
+        });
     </script>
 }
