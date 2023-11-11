@@ -28,7 +28,7 @@
     </div>
 </div>
 <div>
-    <audio controls style="width: 100%">
+    <audio id="audio" controls style="width: 100%">
         <source src="@fileName" type="audio/mpeg">
     </audio>
 </div>
@@ -72,11 +72,64 @@
 
 @section Scripts {
     <script>
+        let audio = $("#audio")[0];
+        let currentInputIndex = 0;
+        let inputs = $(".word_input");
+
+        $(document).keyup((e) => {
+            if (e.keyCode == 13) {
+                if (audio.paused) {
+                    audio.play();
+                }
+                else {
+                    audio.pause();
+                }
+                return;
+            }
+
+            if (e.keyCode == 40 && audio.currentTime >= 5) {
+                audio.currentTime -= 5;
+                return;
+            }
+
+            if (e.keyCode == 38 && audio.duration >= audio.currentTime + 5) {
+                audio.currentTime += 5;
+                return;
+            }
+
+            if (e.keyCode == 37) {
+                currentInputIndex--;
+            }
+
+            if (e.keyCode == 39) {
+                currentInputIndex++;
+            }
+
+            if (currentInputIndex < 0 || currentInputIndex >= inputs.length) currentInputIndex = 0;
+            $(inputs[currentInputIndex]).focus();
+        });
+
+        inputs.each((i, p) => {
+            $(p).keyup((e) => {
+                if (e.keyCode == 32) {
+                    e.preventDefault();
+                    $(inputs[i]).val($(inputs[i]).val().trim());
+                    let nextIndex = $(inputs[i + 1]);
+                    if (nextIndex) nextIndex.focus();
+                }
+            })
+
+            $(p).on("focus", () => {
+                currentInputIndex = i;
+            });
+        });
+
         $("#btnVerify").click((e) => {
             e.preventDefault();
             let words = $(".word_input");
             for (let i = 0; i < words.length; i++) {
                 let word = $(words[i]);
+
                 word.removeClass('correct');
                 word.removeClass('incorrect');
 
@@ -87,18 +140,6 @@
                     word.addClass('correct');
                 }
             }
-        });
-
-        let inputs = $(".word_input");
-        inputs.each((i, p) => {
-            $(p).keyup((e) => {
-                if (e.keyCode == 32) {
-                    e.preventDefault();
-                    $(inputs[i]).val($(inputs[i]).val().trim());
-                    let nextIndex = $(inputs[i + 1]);
-                    if (nextIndex) nextIndex.focus();
-                }
-            })
         });
     </script>
 }
