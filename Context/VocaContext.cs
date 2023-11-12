@@ -12,5 +12,7 @@ namespace VocaSRS.Context
         public DbSet<Vocabulary> Vocabularies { get; set; }
 
         public DbSet<Paragraph> Paragraphs { get; set; }
+
+        public DbSet<DailyReview> DailyReviews { get; set; }
     }
 }

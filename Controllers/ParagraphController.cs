@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using VocaSRS.Context.Entities;
 using VocaSRS.Models;
 using VocaSRS.Services;
 
@@ -35,7 +34,13 @@ namespace VocaSRS.Controllers
             }
 
             ViewBag.Paragraph = paragraph;
-            _service.IncreaseParagraphPracticeTimes(paragraph.Id);
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult Practice([FromForm] int id)
+        {
+            _service.PracticeParagraph(id);
             return View();
         }
     }

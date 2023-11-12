@@ -1,0 +1,13 @@
+﻿@model DailyReviewRequestModel
+
+<form method="post" asp-controller="DailyReview" asp-action="Add" autocomplete="off">
+    <div class="form-group pb-3">
+        <label>Tiêu đề</label>
+        <input type="text" class="form-control" asp-for="Title" autofocus>
+    </div>
+    <div class="form-group pb-3">
+        <label>Chú thích</label>
+        <input type="text" class="form-control" asp-for="Description" autofocus>
+    </div>
+    <button type="submit" class="btn btn-primary">Thêm</button>
+</form>

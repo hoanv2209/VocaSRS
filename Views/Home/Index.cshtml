@@ -1,4 +1,8 @@
-﻿@model DashboardResponseModel
+﻿@{
+    DashboardResponseModel vocabularyInfo = ViewBag.VocabularyInfo;
+    DashboardResponseModel paragraphInfo = ViewBag.ParagraphInfo;
+    DashboardResponseModel dailyReviewInfo = ViewBag.DailyReviewInfo;
+}
 
 <style>
     table {
@@ -22,53 +26,167 @@
 <table class="text-center">
     <tr>
         <td colspan="3">
-            <p>Total words</p>
+            <p>Số bài ngữ pháp</p>
             <p class="number">
-                @Model.TotalVocabularies
+                @dailyReviewInfo.Total
             </p>
         </td>
         <td colspan="3">
-            <p>Memorized words</p>
+            <p>Đã nhớ</p>
             <p class="number">
-                @Model.MemorizedVocabularies
+                @dailyReviewInfo.Memorized
             </p>
         </td>
     </tr>
     <tr>
         <td>
-            <p>Unseen</p>
+            <p>Bài mới</p>
             <p class="number">
-                @Model.UnseenVocabularies
+                @dailyReviewInfo.Unseen
             </p>
         </td>
         <td>
-            <p>1st review</p>
+            <p>Học lần 1</p>
             <p class="number">
-                @Model.FirstReviewVocabularies
+                @dailyReviewInfo.FirstReview
             </p>
         </td>
         <td>
-            <p>2nd review</p>
+            <p>Học lần 2</p>
             <p class="number">
-                @Model.SecondReviewVocabularies
+                @dailyReviewInfo.SecondReview
             </p>
         </td>
         <td>
-            <p>3rd review</p>
+            <p>Học lần 3</p>
             <p class="number">
-                @Model.ThirdReviewVocabularies
+                @dailyReviewInfo.ThirdReview
             </p>
         </td>
         <td>
-            <p>4th review</p>
+            <p>Học lần 4</p>
             <p class="number">
-                @Model.FourthReviewVocabularies
+                @dailyReviewInfo.FourthReview
             </p>
         </td>
         <td>
-            <p>5th review</p>
+            <p>Học lần 5</p>
             <p class="number">
-                @Model.FifthReviewVocabularies
+                @dailyReviewInfo.FifthReview
+            </p>
+        </td>
+    </tr>
+</table>
+
+<br />
+
+<table class="text-center">
+    <tr>
+        <td colspan="3">
+            <p>Tổng số bài nghe - chép</p>
+            <p class="number">
+                @paragraphInfo.Total
+            </p>
+        </td>
+        <td colspan="3">
+            <p>Đã nghe - chép xong</p>
+            <p class="number">
+                @paragraphInfo.Memorized
+            </p>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <p>Bài mới</p>
+            <p class="number">
+                @paragraphInfo.Unseen
+            </p>
+        </td>
+        <td>
+            <p>Chép lần 1</p>
+            <p class="number">
+                @paragraphInfo.FirstReview
+            </p>
+        </td>
+        <td>
+            <p>Chép lần 2</p>
+            <p class="number">
+                @paragraphInfo.SecondReview
+            </p>
+        </td>
+        <td>
+            <p>Chép lần 3</p>
+            <p class="number">
+                @paragraphInfo.ThirdReview
+            </p>
+        </td>
+        <td>
+            <p>Chép lần 4</p>
+            <p class="number">
+                @paragraphInfo.FourthReview
+            </p>
+        </td>
+        <td>
+            <p>Chép lần 5</p>
+            <p class="number">
+                @paragraphInfo.FifthReview
+            </p>
+        </td>
+    </tr>
+</table>
+
+<br />
+
+<table class="text-center">
+    <tr>
+        <td colspan="3">
+            <p>Tổng số từ</p>
+            <p class="number">
+                @vocabularyInfo.Total
+            </p>
+        </td>
+        <td colspan="3">
+            <p>Số từ đã nhớ</p>
+            <p class="number">
+                @vocabularyInfo.Memorized
+            </p>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <p>Từ mới</p>
+            <p class="number">
+                @vocabularyInfo.Unseen
+            </p>
+        </td>
+        <td>
+            <p>Học lần 1</p>
+            <p class="number">
+                @vocabularyInfo.FirstReview
+            </p>
+        </td>
+        <td>
+            <p>Học lần 2</p>
+            <p class="number">
+                @vocabularyInfo.SecondReview
+            </p>
+        </td>
+        <td>
+            <p>Học lần 3</p>
+            <p class="number">
+                @vocabularyInfo.ThirdReview
+            </p>
+        </td>
+        <td>
+            <p>Học lần 4</p>
+            <p class="number">
+                @vocabularyInfo.FourthReview
+            </p>
+        </td>
+        <td>
+            <p>Học lần 5</p>
+            <p class="number">
+                @vocabularyInfo.FifthReview
             </p>
         </td>
     </tr>

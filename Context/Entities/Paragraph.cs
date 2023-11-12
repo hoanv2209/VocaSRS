@@ -13,6 +13,9 @@ namespace VocaSRS.Context.Entities
 
         public string SoundPath { get; set; }
 
-        public int Times { get; set; }
+        public PracticeStatus Status { get; set; }
+
+        public DateTime? PracticeDate { get; set; }
     }
+
 }

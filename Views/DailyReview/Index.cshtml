@@ -1,0 +1,15 @@
+﻿@model DailyReviewResponseModel
+
+<form method="post" asp-controller="DailyReview" asp-action="Review" autocomplete="off">
+    @Html.Hidden("id", Model.Id)
+
+    <div class="alert alert-primary" role="alert">
+        @Html.Raw(Model.Title)
+    </div>
+
+    <div class="alert alert-primary" role="alert">
+        @Html.Raw(Model.Description)
+    </div>
+    
+    <button type="submit" id="btnReview" class="btn btn-primary">Đã ôn xong</button>
+</form>

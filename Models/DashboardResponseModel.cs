@@ -2,13 +2,13 @@
 {
     public class DashboardResponseModel
     {
-        public int TotalVocabularies { get; set; }
-        public int MemorizedVocabularies { get; set; }
-        public int UnseenVocabularies { get; set; }
-        public int FirstReviewVocabularies { get; set; }
-        public int SecondReviewVocabularies { get; set; }
-        public int ThirdReviewVocabularies { get; set; }
-        public int FourthReviewVocabularies { get; set; }
-        public int FifthReviewVocabularies { get; set; }
+        public int Total { get; set; }
+        public int Memorized { get; set; }
+        public int Unseen { get; set; }
+        public int FirstReview { get; set; }
+        public int SecondReview { get; set; }
+        public int ThirdReview { get; set; }
+        public int FourthReview { get; set; }
+        public int FifthReview { get; set; }
     }
 }

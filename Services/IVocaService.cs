@@ -4,7 +4,11 @@ namespace VocaSRS.Services
 {
     public interface IVocaService
     {
-        DashboardResponseModel GetDashboardInfo();
+        DashboardResponseModel GetVocabularyDashboardInfo();
+
+        DashboardResponseModel GetDailyReviewDashboardInfo();
+
+        DashboardResponseModel GetParagraphDashboardInfo();
 
         void AddVocabulary(VocabularyRequestModel model);
 
@@ -16,6 +20,12 @@ namespace VocaSRS.Services
 
         ParagraphResponseModel GetRandomParagraph();
 
-        void IncreaseParagraphPracticeTimes(int id);
+        void PracticeParagraph(int id);
+
+        DailyReviewResponseModel GetDailyReviewLesson();
+
+        void AddDailyReview(DailyReviewRequestModel model);
+
+        void ReviewLesson(int id);
     }
 }

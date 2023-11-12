@@ -2,22 +2,22 @@
 
 <form method="post" asp-controller="Vocabulary" asp-action="Add" autocomplete="off">
     <div class="form-group pb-3">
-        <label>Left side sentence</label>
+        <label>Vế trái</label>
         <input type="text" class="form-control" asp-for="LeftSideSentence" autofocus>
     </div>
     <div class="row">
         <div class="col form-group pb-3">
-            <label>Native Word</label>
+            <label>Nghĩa tiếng Việt</label>
             <input type="text" class="form-control" asp-for="NativeWord">
         </div>
         <div class="col form-group pb-3">
-            <label>Foreign Word</label>
+            <label>Từ vựng tiếng Anh</label>
             <input type="text" class="form-control" asp-for="ForeignWord">
         </div>
     </div>
     <div class="form-group pb-3">
-        <label>Right side sentence</label>
+        <label>Vế phải</label>
         <input type="text" class="form-control" asp-for="RightSideSentence">
     </div>
-    <button type="submit" class="btn btn-primary">Submit</button>
+    <button type="submit" class="btn btn-primary">Thêm</button>
 </form>

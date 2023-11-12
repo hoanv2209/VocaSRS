@@ -2,18 +2,14 @@
 
 namespace VocaSRS.Context.Entities
 {
-    public class Vocabulary
+    public class DailyReview
     {
         [Key]
         public int Id { get; set; }
 
-        public string RightSideSentence { get; set; }
+        public string Title { get; set; }
 
-        public string LeftSideSentence { get; set; }
-
-        public string NativeWord { get; set; }
-
-        public string ForeignWord { get; set; }
+        public string Description { get; set; }
 
         public PracticeStatus Status { get; set; }
 
