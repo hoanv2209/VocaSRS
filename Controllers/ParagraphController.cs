@@ -41,7 +41,7 @@ namespace VocaSRS.Controllers
         public IActionResult Practice([FromForm] int id)
         {
             _service.PracticeParagraph(id);
-            return View();
+            return RedirectToAction("Practice");
         }
     }
 }
