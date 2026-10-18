@@ -1,23 +1,303 @@
 ﻿@model VocabularyRequestModel
 
-<form method="post" asp-controller="Vocabulary" asp-action="Add" autocomplete="off">
-    <div class="form-group pb-3">
-        <label>Vế trái</label>
-        <input type="text" class="form-control" asp-for="LeftSideSentence" autofocus>
-    </div>
-    <div class="row">
-        <div class="col form-group pb-3">
-            <label>Nghĩa tiếng Việt</label>
-            <input type="text" class="form-control" asp-for="NativeWord">
-        </div>
-        <div class="col form-group pb-3">
-            <label>Từ vựng tiếng Anh</label>
-            <input type="text" class="form-control" asp-for="ForeignWord">
-        </div>
-    </div>
-    <div class="form-group pb-3">
-        <label>Vế phải</label>
-        <input type="text" class="form-control" asp-for="RightSideSentence">
-    </div>
-    <button type="submit" class="btn btn-primary">Thêm</button>
-</form>
+<div class="vocabulary-page">
+	<div class="vocabulary-card">
+		<div class="vocabulary-heading">
+			<div class="heading-icon">
+				<svg xmlns="http://www.w3.org/2000/svg"
+					 width="30" height="30" viewBox="0 0 24 24"
+					 fill="none" stroke="currentColor"
+					 stroke-width="1.8" stroke-linecap="round"
+					 stroke-linejoin="round">
+					<path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v16H6.5A2.5 2.5 0 0 0 4 21z" />
+					<path d="M4 5.5v13A2.5 2.5 0 0 1 6.5 16H20" />
+					<path d="M9 7h6" />
+					<path d="M9 10h4" />
+				</svg>
+			</div>
+
+			<div>
+				<h2>Thêm từ vựng</h2>
+				<p>Ghi lại từ mới để học và ôn tập mỗi ngày.</p>
+			</div>
+		</div>
+
+		<div class="heading-divider"></div>
+
+		<form method="post"
+			  asp-controller="Vocabulary"
+			  asp-action="Add"
+			  autocomplete="off">
+
+			<div class="form-field">
+				<label asp-for="ForeignWord">Từ vựng tiếng Anh</label>
+				<div class="input-wrapper">
+					<span class="input-icon">Aa</span>
+					<input type="text"
+						   class="form-control"
+						   asp-for="ForeignWord"
+						   placeholder="Ví dụ: Hello"
+						   required
+						   autofocus />
+				</div>
+				<span asp-validation-for="ForeignWord"
+					  class="validation-message"></span>
+			</div>
+
+			<div class="form-field">
+				<label asp-for="NativeWord">Nghĩa tiếng Việt</label>
+				<div class="input-wrapper">
+					<span class="input-icon">
+						<svg xmlns="http://www.w3.org/2000/svg"
+							 width="18" height="18" viewBox="0 0 24 24"
+							 fill="none" stroke="currentColor"
+							 stroke-width="1.8" stroke-linecap="round"
+							 stroke-linejoin="round">
+							<path d="M12 7v14" />
+							<path d="M3 18V5a2 2 0 0 1 2-2h4a3 3 0 0 1 3 3 3 3 0 0 1 3-3h4a2 2 0 0 1 2 2v13h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z" />
+						</svg>
+					</span>
+					<input type="text"
+						   class="form-control"
+						   asp-for="NativeWord"
+						   placeholder="Ví dụ: Xin chào"
+						   required />
+				</div>
+				<span asp-validation-for="NativeWord"
+					  class="validation-message"></span>
+			</div>
+
+
+
+			<div class="form-hint">
+				<span class="hint-icon">✦</span>
+				Mẹo: Hãy nhập từ và nghĩa ngắn gọn để dễ ghi nhớ hơn.
+			</div>
+
+			<div class="form-actions">
+				<button type="reset" class="btn btn-cancel">
+					Làm mới
+				</button>
+
+				<button type="submit" class="btn btn-submit">
+					<span>+</span>
+					Thêm từ vựng
+				</button>
+			</div>
+		</form>
+	</div>
+</div>
+
+<style>
+	.vocabulary-page {
+		max-width: 760px;
+		margin: 48px auto;
+		padding: 0 16px;
+		color: #1e293b;
+	}
+
+	.vocabulary-card {
+		padding: 36px;
+		background: #fff;
+		border: 1px solid #e8edf4;
+		border-radius: 22px;
+		box-shadow: 0 12px 40px rgba(15, 23, 42, .06);
+	}
+
+	.vocabulary-heading {
+		display: flex;
+		align-items: center;
+		gap: 18px;
+	}
+
+	.heading-icon {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		width: 58px;
+		height: 58px;
+		flex-shrink: 0;
+		border-radius: 16px;
+		background: #eff6ff;
+		color: #2563eb;
+	}
+
+	.vocabulary-heading h2 {
+		margin: 0 0 7px;
+		font-size: 25px;
+		font-weight: 750;
+		letter-spacing: -.5px;
+	}
+
+	.vocabulary-heading p {
+		margin: 0;
+		color: #64748b;
+		font-size: 14px;
+		line-height: 1.6;
+	}
+
+	.heading-divider {
+		height: 1px;
+		background: #edf0f5;
+		margin: 28px 0;
+	}
+
+	.form-field {
+		margin-bottom: 24px;
+	}
+
+		.form-field label {
+			display: block;
+			margin-bottom: 9px;
+			color: #334155;
+			font-size: 14px;
+			font-weight: 650;
+		}
+
+	.input-wrapper {
+		position: relative;
+	}
+
+	.input-icon {
+		position: absolute;
+		left: 15px;
+		top: 50%;
+		transform: translateY(-50%);
+		z-index: 1;
+		color: #64748b;
+		font-size: 15px;
+		font-weight: 700;
+	}
+
+	.input-wrapper .form-control {
+		height: 52px;
+		padding: 12px 15px 12px 48px;
+		border: 1px solid #dce3ed;
+		border-radius: 12px;
+		background: #fbfcfe;
+		color: #0f172a;
+		font-size: 15px;
+		transition: border-color .2s, box-shadow .2s, background .2s;
+	}
+
+		.input-wrapper .form-control::placeholder {
+			color: #a0aabb;
+		}
+
+		.input-wrapper .form-control:focus {
+			background: #fff;
+			border-color: #3b82f6;
+			box-shadow: 0 0 0 4px rgba(59, 130, 246, .12);
+			outline: none;
+		}
+
+	.validation-message {
+		display: block;
+		margin-top: 6px;
+		color: #dc2626;
+		font-size: 12px;
+	}
+
+	.form-hint {
+		display: flex;
+		align-items: flex-start;
+		gap: 9px;
+		margin: 8px 0 26px;
+		padding: 13px 15px;
+		border-radius: 10px;
+		background: #f8fafc;
+		color: #64748b;
+		font-size: 13px;
+		line-height: 1.6;
+	}
+
+	.hint-icon {
+		color: #3b82f6;
+		font-size: 16px;
+	}
+
+	.form-actions {
+		display: flex;
+		justify-content: flex-end;
+		gap: 12px;
+	}
+
+		.form-actions .btn {
+			min-height: 46px;
+			padding: 11px 20px;
+			border-radius: 11px;
+			font-size: 14px;
+			font-weight: 650;
+			transition: transform .15s, box-shadow .15s;
+		}
+
+	.btn-cancel {
+		color: #475569;
+		background: #fff;
+		border: 1px solid #dce3ed;
+	}
+
+		.btn-cancel:hover {
+			background: #f8fafc;
+		}
+
+	.btn-submit {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		gap: 8px;
+		color: #fff;
+		background: #2563eb;
+		border: 1px solid #2563eb;
+		box-shadow: 0 4px 10px rgba(37, 99, 235, .16);
+	}
+
+		.btn-submit:hover {
+			color: #fff;
+			background: #1d4ed8;
+			border-color: #1d4ed8;
+			transform: translateY(-1px);
+			box-shadow: 0 6px 14px rgba(37, 99, 235, .22);
+		}
+
+		.btn-submit span {
+			font-size: 20px;
+			line-height: 1;
+		}
+
+	@@media (max-width: 576px) {
+		.vocabulary-page {
+			margin: 24px auto;
+		}
+
+		.vocabulary-card {
+			padding: 24px 18px;
+			border-radius: 18px;
+		}
+
+		.vocabulary-heading {
+			gap: 13px;
+		}
+
+		.heading-icon {
+			width: 48px;
+			height: 48px;
+		}
+
+		.vocabulary-heading h2 {
+			font-size: 21px;
+		}
+
+		.heading-divider {
+			margin: 22px 0;
+		}
+
+		.form-actions {
+			flex-direction: column-reverse;
+		}
+
+			.form-actions .btn {
+				width: 100%;
+			}
+	}
+</style>

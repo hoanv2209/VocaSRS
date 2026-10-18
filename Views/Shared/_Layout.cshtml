@@ -1,56 +1,86 @@
-﻿<!DOCTYPE html>
-<html lang="en">
+﻿
+<!DOCTYPE html>
+<html lang="vi">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>VocaSRS</title>
+    <title>@ViewData["Title"] - VocaSRS</title>
 
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/VocaSRS.styles.css" asp-append-version="true" />
 </head>
 <body>
-    <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">VocaSRS</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
+    @{
+        var controller = ViewContext.RouteData.Values["controller"]?.ToString();
+        var action = ViewContext.RouteData.Values["action"]?.ToString();
+
+        bool isHome = controller == "Home" && action == "Index";
+        bool isVocabulary = controller == "Vocabulary" && action == "Index";
+        bool isPractice = controller == "Vocabulary" && action == "Practice";
+    }
+
+    <header class="site-header">
+        <nav class="navbar navbar-expand-md site-navbar">
+            <div class="container">
+                <a class="navbar-brand site-brand"
+                   asp-controller="Home" asp-action="Index">
+                    <span class="brand-mark">V.</span>
+                    <span>vocasrs</span>
+                </a>
+
+                <button class="navbar-toggler"
+                        type="button"
+                        data-bs-toggle="collapse"
+                        data-bs-target="#siteNavigation"
+                        aria-controls="siteNavigation"
+                        aria-expanded="false"
+                        aria-label="Mở menu">
                     <span class="navbar-toggler-icon"></span>
                 </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
+
+                <div class="collapse navbar-collapse" id="siteNavigation">
+                    <ul class="navbar-nav ms-auto site-nav">
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Thành quả :))</a>
+                            <a class="nav-link @(isHome ? "active" : "")"
+                               asp-controller="Home"
+                               asp-action="Index">
+                                Tổng quan
+                            </a>
                         </li>
+
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="DailyReview" asp-action="Index">Hôm nay ôn gì?</a>
+                            <a class="nav-link @(isVocabulary ? "active" : "")"
+                               asp-controller="Vocabulary"
+                               asp-action="Index">
+                                Từ vựng
+                            </a>
                         </li>
+
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="DailyReview" asp-action="Add">Học gì thì note vào đây</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Paragraph" asp-action="Index">Tạo bài nghe - chép</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Paragraph" asp-action="Practice">Luyện nghe - chép</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Vocabulary" asp-action="Index">Thêm từ vựng</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Vocabulary" asp-action="Practice">Học từ vựng</a>
+                            <a class="nav-link nav-link-practice @(isPractice ? "active" : "")"
+                               asp-controller="Vocabulary"
+                               asp-action="Practice">
+                                Luyện tập
+                                <span class="practice-arrow">↗</span>
+                            </a>
                         </li>
                     </ul>
                 </div>
             </div>
         </nav>
     </header>
-    <div class="container">
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
-    </div>
+
+    <main class="site-main">
+        @RenderBody()
+    </main>
+
+    <footer class="site-footer">
+        <div class="container footer-content">
+            <span><strong>vocasrs</strong> · Học một chút mỗi ngày.</span>
+            <span>@DateTime.Now.Year</span>
+        </div>
+    </footer>
 
     <script src="~/lib/jquery/dist/jquery-3.6.0.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>

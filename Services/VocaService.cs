@@ -35,8 +35,6 @@ namespace VocaSRS.Services
         {
             _context.Vocabularies.Add(new Vocabulary
             {
-                LeftSideSentence = string.IsNullOrEmpty(model.LeftSideSentence) ? string.Empty : model.LeftSideSentence.Trim(),
-                RightSideSentence = string.IsNullOrEmpty(model.RightSideSentence) ? string.Empty : model.RightSideSentence.Trim(),
                 NativeWord = model.NativeWord.Trim(),
                 ForeignWord = model.ForeignWord.Trim(),
                 Status = PracticeStatus.Unseen,
@@ -72,38 +70,9 @@ namespace VocaSRS.Services
             return new PracticeResponseModel
             {
                 Id = word.Id,
-                OriginalSentence = BuildSentence(word.LeftSideSentence, word.RightSideSentence, word.ForeignWord),
-                MixedSentence = BuildSentence(word.LeftSideSentence, word.RightSideSentence, word.NativeWord.HtmlHighLight()),
-                ForeignWord = word.ForeignWord
+                ForeignWord = word.ForeignWord,
+                NativeWord = word.NativeWord
             };
-        }
-
-        private string BuildSentence(string left, string right, string vocabulary)
-        {
-            var builder = new StringBuilder();
-
-            if (!string.IsNullOrWhiteSpace(left))
-            {
-                builder.Append(left.Trim());
-                builder.Append(" ");
-            }
-
-            if (!string.IsNullOrWhiteSpace(vocabulary))
-            {
-                builder.Append(vocabulary);
-            }
-
-            if (!string.IsNullOrWhiteSpace(right))
-            {
-                if (!Regex.IsMatch(right, "^[.?!]*$"))
-                {
-                    builder.Append(" ");
-                }
-
-                builder.Append(right.Trim());
-            }
-
-            return builder.ToString();
         }
 
         public bool CheckAnswer(PracticeRequestModel model)

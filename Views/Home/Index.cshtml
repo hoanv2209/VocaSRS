@@ -1,193 +1,344 @@
 ﻿@{
-    DashboardResponseModel vocabularyInfo = ViewBag.VocabularyInfo;
-    DashboardResponseModel paragraphInfo = ViewBag.ParagraphInfo;
-    DashboardResponseModel dailyReviewInfo = ViewBag.DailyReviewInfo;
+	DashboardResponseModel vocabularyInfo = ViewBag.VocabularyInfo;
+	DashboardResponseModel paragraphInfo = ViewBag.ParagraphInfo;
+	DashboardResponseModel dailyReviewInfo = ViewBag.DailyReviewInfo;
 }
 
 <style>
-    table {
-        width: 100%;
-    }
+	.dashboard {
+		max-width: 1120px;
+		margin: 36px auto;
+		padding: 0 16px 40px;
+		color: #1e293b;
+	}
 
-    table, th, td {
-        border: 1px solid black;
-        border-collapse: collapse;
-    }
+	.dashboard-hero {
+		position: relative;
+		overflow: hidden;
+		padding: 36px;
+		margin-bottom: 28px;
+		border-radius: 24px;
+		background: linear-gradient(120deg, #1d4ed8, #4f46e5);
+		color: #fff;
+	}
 
-    .number {
-        font-size: 50px;
-    }
+		.dashboard-hero::after {
+			content: "";
+			position: absolute;
+			width: 240px;
+			height: 240px;
+			right: -60px;
+			top: -100px;
+			border: 35px solid rgba(255, 255, 255, .08);
+			border-radius: 50%;
+		}
+
+	.hero-label {
+		font-size: 12px;
+		font-weight: 750;
+		letter-spacing: 2px;
+		text-transform: uppercase;
+		color: #dbeafe;
+	}
+
+	.dashboard-hero h1 {
+		margin: 12px 0;
+		font-size: clamp(28px, 4vw, 40px);
+		font-weight: 800;
+		letter-spacing: -1px;
+	}
+
+	.dashboard-hero p {
+		max-width: 520px;
+		margin: 0;
+		color: #e0e7ff;
+		line-height: 1.7;
+	}
+
+	.section-heading {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		gap: 12px;
+		margin: 32px 0 16px;
+	}
+
+		.section-heading h2 {
+			margin: 0;
+			font-size: 21px;
+			font-weight: 750;
+			letter-spacing: -.4px;
+		}
+
+		.section-heading span {
+			color: #94a3b8;
+			font-size: 13px;
+		}
+
+	.stats-grid {
+		display: grid;
+		grid-template-columns: repeat(3, minmax(0, 1fr));
+		gap: 16px;
+	}
+
+	.stat-card {
+		position: relative;
+		min-width: 0;
+		padding: 24px;
+		border: 1px solid #e8edf4;
+		border-radius: 18px;
+		background: #fff;
+		box-shadow: 0 5px 20px rgba(15, 23, 42, .035);
+		transition: transform .2s, box-shadow .2s;
+	}
+
+		.stat-card:hover {
+			transform: translateY(-3px);
+			box-shadow: 0 12px 28px rgba(15, 23, 42, .07);
+		}
+
+	.stat-top {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 10px;
+		margin-bottom: 18px;
+	}
+
+	.stat-label {
+		color: #64748b;
+		font-size: 14px;
+		font-weight: 600;
+		line-height: 1.5;
+	}
+
+	.stat-icon {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		width: 44px;
+		height: 44px;
+		flex-shrink: 0;
+		border-radius: 13px;
+		font-size: 21px;
+	}
+
+	.stat-number {
+		margin: 0;
+		font-size: clamp(30px, 3.5vw, 42px);
+		font-weight: 800;
+		line-height: 1.2;
+		letter-spacing: -1px;
+		font-variant-numeric: tabular-nums;
+		overflow-wrap: anywhere;
+	}
+
+	.stat-caption {
+		margin-top: 9px;
+		color: #94a3b8;
+		font-size: 12px;
+	}
+
+	.blue {
+		background: #eff6ff;
+		color: #2563eb;
+	}
+
+	.green {
+		background: #ecfdf5;
+		color: #059669;
+	}
+
+	.orange {
+		background: #fff7ed;
+		color: #ea580c;
+	}
+
+	.purple {
+		background: #f5f3ff;
+		color: #7c3aed;
+	}
+
+	.pink {
+		background: #fdf2f8;
+		color: #db2777;
+	}
+
+	.cyan {
+		background: #ecfeff;
+		color: #0891b2;
+	}
+
+	.slate {
+		background: #f1f5f9;
+		color: #475569;
+	}
+
+	.total-card {
+		grid-column: span 2;
+	}
+
+		.total-card .stat-number {
+			font-size: clamp(36px, 4vw, 48px);
+		}
+
+	.review-card {
+		padding-bottom: 22px;
+	}
+
+	.review-stage {
+		display: inline-flex;
+		align-items: center;
+		gap: 6px;
+		margin-top: 12px;
+		padding: 5px 9px;
+		border-radius: 8px;
+		background: #f8fafc;
+		color: #64748b;
+		font-size: 11px;
+		font-weight: 650;
+	}
+
+	@@media (max-width: 768px) {
+		.dashboard {
+			margin-top: 20px;
+		}
+
+		.dashboard-hero {
+			padding: 28px 24px;
+			border-radius: 20px;
+		}
+
+		.stats-grid {
+			grid-template-columns: repeat(2, minmax(0, 1fr));
+			gap: 12px;
+		}
+
+		.stat-card {
+			padding: 18px;
+			border-radius: 15px;
+		}
+
+		.total-card {
+			grid-column: span 2;
+		}
+
+		.stat-icon {
+			width: 38px;
+			height: 38px;
+			font-size: 18px;
+		}
+	}
+
+	@@media (max-width: 380px) {
+		.stat-card {
+			padding: 14px;
+		}
+
+		.stat-top {
+			align-items: flex-start;
+			flex-direction: column-reverse;
+		}
+
+		.stat-number {
+			font-size: 29px;
+		}
+	}
 </style>
 
-<div class="text-center pb-5">
-    <h1 class="display-4">Welcome to VocaSRS</h1>
+<div class="dashboard">
+	<section class="dashboard-hero">
+		<div class="hero-label">Your learning space</div>
+		<h1>Welcome to VocaSRS 👋</h1>
+		<p>
+			Mỗi từ vựng bạn ghi nhớ hôm nay là một bước tiến gần hơn
+			đến mục tiêu sử dụng tiếng Anh thành thạo.
+		</p>
+	</section>
+
+	<div class="section-heading">
+		<h2>Tổng quan từ vựng</h2>
+		<span>Your vocabulary progress</span>
+	</div>
+
+	<div class="stats-grid">
+		<div class="stat-card total-card">
+			<div class="stat-top">
+				<span class="stat-label">Tổng số từ vựng</span>
+				<div class="stat-icon blue">📚</div>
+			</div>
+			<p class="stat-number">@vocabularyInfo.Total.ToString("N0")</p>
+			<div class="stat-caption">Tất cả từ vựng trong bộ sưu tập</div>
+		</div>
+
+		<div class="stat-card">
+			<div class="stat-top">
+				<span class="stat-label">Số từ đã nhớ</span>
+				<div class="stat-icon green">✓</div>
+			</div>
+			<p class="stat-number">@vocabularyInfo.Memorized.ToString("N0")</p>
+			<div class="stat-caption">Từ đã ghi nhớ</div>
+		</div>
+	</div>
+
+	<div class="section-heading">
+		<h2>Tiến độ ôn tập</h2>
+		<span>Review stages</span>
+	</div>
+
+	<div class="stats-grid">
+		<div class="stat-card review-card">
+			<div class="stat-top">
+				<span class="stat-label">Từ mới</span>
+				<div class="stat-icon orange">✨</div>
+			</div>
+			<p class="stat-number">@vocabularyInfo.Unseen.ToString("N0")</p>
+			<div class="review-stage">Chưa học</div>
+		</div>
+
+		<div class="stat-card review-card">
+			<div class="stat-top">
+				<span class="stat-label">Học lần 1</span>
+				<div class="stat-icon blue">①</div>
+			</div>
+			<p class="stat-number">@vocabularyInfo.FirstReview.ToString("N0")</p>
+			<div class="review-stage">Bước 01</div>
+		</div>
+
+		<div class="stat-card review-card">
+			<div class="stat-top">
+				<span class="stat-label">Học lần 2</span>
+				<div class="stat-icon cyan">②</div>
+			</div>
+			<p class="stat-number">@vocabularyInfo.SecondReview.ToString("N0")</p>
+			<div class="review-stage">Bước 02</div>
+		</div>
+
+		<div class="stat-card review-card">
+			<div class="stat-top">
+				<span class="stat-label">Học lần 3</span>
+				<div class="stat-icon purple">③</div>
+			</div>
+			<p class="stat-number">@vocabularyInfo.ThirdReview.ToString("N0")</p>
+			<div class="review-stage">Bước 03</div>
+		</div>
+
+		<div class="stat-card review-card">
+			<div class="stat-top">
+				<span class="stat-label">Học lần 4</span>
+				<div class="stat-icon pink">④</div>
+			</div>
+			<p class="stat-number">@vocabularyInfo.FourthReview.ToString("N0")</p>
+			<div class="review-stage">Bước 04</div>
+		</div>
+
+		<div class="stat-card review-card">
+			<div class="stat-top">
+				<span class="stat-label">Học lần 5</span>
+				<div class="stat-icon green">⑤</div>
+			</div>
+			<p class="stat-number">@vocabularyInfo.FifthReview.ToString("N0")</p>
+			<div class="review-stage">Bước 05</div>
+		</div>
+	</div>
 </div>
-
-<table class="text-center">
-    <tr>
-        <td colspan="3">
-            <p>Số bài ngữ pháp</p>
-            <p class="number">
-                @dailyReviewInfo.Total
-            </p>
-        </td>
-        <td colspan="3">
-            <p>Đã nhớ</p>
-            <p class="number">
-                @dailyReviewInfo.Memorized
-            </p>
-        </td>
-    </tr>
-    <tr>
-        <td>
-            <p>Bài mới</p>
-            <p class="number">
-                @dailyReviewInfo.Unseen
-            </p>
-        </td>
-        <td>
-            <p>Học lần 1</p>
-            <p class="number">
-                @dailyReviewInfo.FirstReview
-            </p>
-        </td>
-        <td>
-            <p>Học lần 2</p>
-            <p class="number">
-                @dailyReviewInfo.SecondReview
-            </p>
-        </td>
-        <td>
-            <p>Học lần 3</p>
-            <p class="number">
-                @dailyReviewInfo.ThirdReview
-            </p>
-        </td>
-        <td>
-            <p>Học lần 4</p>
-            <p class="number">
-                @dailyReviewInfo.FourthReview
-            </p>
-        </td>
-        <td>
-            <p>Học lần 5</p>
-            <p class="number">
-                @dailyReviewInfo.FifthReview
-            </p>
-        </td>
-    </tr>
-</table>
-
-<br />
-
-<table class="text-center">
-    <tr>
-        <td colspan="3">
-            <p>Tổng số bài nghe - chép</p>
-            <p class="number">
-                @paragraphInfo.Total
-            </p>
-        </td>
-        <td colspan="3">
-            <p>Đã nghe - chép xong</p>
-            <p class="number">
-                @paragraphInfo.Memorized
-            </p>
-        </td>
-    </tr>
-    <tr>
-        <td>
-            <p>Bài mới</p>
-            <p class="number">
-                @paragraphInfo.Unseen
-            </p>
-        </td>
-        <td>
-            <p>Chép lần 1</p>
-            <p class="number">
-                @paragraphInfo.FirstReview
-            </p>
-        </td>
-        <td>
-            <p>Chép lần 2</p>
-            <p class="number">
-                @paragraphInfo.SecondReview
-            </p>
-        </td>
-        <td>
-            <p>Chép lần 3</p>
-            <p class="number">
-                @paragraphInfo.ThirdReview
-            </p>
-        </td>
-        <td>
-            <p>Chép lần 4</p>
-            <p class="number">
-                @paragraphInfo.FourthReview
-            </p>
-        </td>
-        <td>
-            <p>Chép lần 5</p>
-            <p class="number">
-                @paragraphInfo.FifthReview
-            </p>
-        </td>
-    </tr>
-</table>
-
-<br />
-
-<table class="text-center">
-    <tr>
-        <td colspan="3">
-            <p>Tổng số từ</p>
-            <p class="number">
-                @vocabularyInfo.Total
-            </p>
-        </td>
-        <td colspan="3">
-            <p>Số từ đã nhớ</p>
-            <p class="number">
-                @vocabularyInfo.Memorized
-            </p>
-        </td>
-    </tr>
-    <tr>
-        <td>
-            <p>Từ mới</p>
-            <p class="number">
-                @vocabularyInfo.Unseen
-            </p>
-        </td>
-        <td>
-            <p>Học lần 1</p>
-            <p class="number">
-                @vocabularyInfo.FirstReview
-            </p>
-        </td>
-        <td>
-            <p>Học lần 2</p>
-            <p class="number">
-                @vocabularyInfo.SecondReview
-            </p>
-        </td>
-        <td>
-            <p>Học lần 3</p>
-            <p class="number">
-                @vocabularyInfo.ThirdReview
-            </p>
-        </td>
-        <td>
-            <p>Học lần 4</p>
-            <p class="number">
-                @vocabularyInfo.FourthReview
-            </p>
-        </td>
-        <td>
-            <p>Học lần 5</p>
-            <p class="number">
-                @vocabularyInfo.FifthReview
-            </p>
-        </td>
-    </tr>
-</table>

@@ -3,35 +3,517 @@
     PracticeResponseModel vocabulary = ViewBag.Vocabulary;
 }
 
-<form method="post" asp-controller="Vocabulary" asp-action="Practice" autocomplete="off">
-    @Html.Hidden("Id", vocabulary.Id)
-    @Html.Hidden("ForeignWord", vocabulary.ForeignWord)
-    @Html.Hidden("OriginalSentence", vocabulary.OriginalSentence)
-    <div class="alert alert-primary" role="alert">
-        @Html.Raw(vocabulary.MixedSentence)
+<div class="practice-page">
+    <div class="practice-card">
+        <div class="practice-header">
+            <div>
+                <div class="practice-label">VOCABULARY PRACTICE</div>
+                <h2>Word Challenge</h2>
+                <p class="text-muted mb-0">Remember the word and type it correctly.</p>
+            </div>
+
+            <div class="timer-circle" id="timerCircle">
+                <span id="timer">10</span>
+                <small>SECONDS</small>
+            </div>
+        </div>
+
+        <div class="progress practice-progress">
+            <div id="progressBar"
+                 class="progress-bar"
+                 role="progressbar"
+                 style="width: 0%">
+            </div>
+        </div>
+
+        <form id="practiceForm"
+              method="post"
+              asp-controller="Vocabulary"
+              asp-action="Practice"
+              autocomplete="off">
+
+            @Html.Hidden("Id", vocabulary.Id)
+            @Html.Hidden("ForeignWord", vocabulary.ForeignWord)
+            <input type="hidden" asp-for="Answer" id="Answer" />
+
+            <div class="word-card">
+                <div class="word-label">TRANSLATE THIS WORD</div>
+
+                <div class="native-word">
+                    @Html.Raw(vocabulary.NativeWord)
+                </div>
+
+                <div class="word-hint">
+                    Type the missing letters
+                </div>
+            </div>
+
+            <div class="answer-area" id="answerArea">
+                <div id="letterBoxes" class="letter-boxes"></div>
+
+                <input type="text"
+                       id="typingInput"
+                       class="typing-capture"
+                       aria-label="Type the English word"
+                       autocomplete="off"
+                       autocapitalize="off"
+                       spellcheck="false"
+                       autofocus />
+
+                <div id="feedback" class="feedback">
+                    Click the letters area and start typing.
+                </div>
+            </div>
+
+            <div class="practice-footer">
+                <button type="button"
+                        class="btn btn-outline-secondary"
+                        id="btnRead">
+                    <span aria-hidden="true">🔊</span> Listen
+                </button>
+
+                <button type="submit" class="btn btn-primary" id="btnCheck">
+                    Check answer <span aria-hidden="true">→</span>
+                </button>
+            </div>
+        </form>
     </div>
-    <div class="form-group pb-3">
-        <label>Từ vựng tiếng Anh</label>
-        <input type="text" class="form-control" placeholder="Enter answer" asp-for="Answer" autofocus>
+
+    <div class="practice-tip">
+        <span aria-hidden="true">💡</span>
+        The first letter is given. Only correct letters will be filled in.
     </div>
-    <button type="submit" class="btn btn-primary">Kiểm tra</button>
-    <button class="btn btn-success" id="btnRead">Đọc</button>
-    <button class="btn btn-success" id="btnReadSentence">Đọc cả câu</button>
-</form>
+</div>
+
+<style>
+    .practice-page {
+        max-width: 680px;
+        margin: 48px auto;
+        padding: 0 16px;
+        color: #1f2937;
+    }
+
+    .practice-card {
+        background: #fff;
+        border: 1px solid #e8edf5;
+        border-radius: 24px;
+        padding: 32px;
+        box-shadow: 0 16px 48px rgba(31, 41, 55, .08);
+    }
+
+    .practice-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 20px;
+    }
+
+    .practice-label, .word-label {
+        font-size: 11px;
+        font-weight: 800;
+        letter-spacing: 1.5px;
+        color: #64748b;
+    }
+
+    .practice-header h2 {
+        margin: 8px 0;
+        font-weight: 800;
+        letter-spacing: -.7px;
+    }
+
+    .timer-circle {
+        width: 76px;
+        height: 76px;
+        flex-shrink: 0;
+        border: 4px solid #dbeafe;
+        border-radius: 50%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        color: #2563eb;
+        background: #eff6ff;
+        transition: all .2s ease;
+    }
+
+        .timer-circle #timer {
+            font-size: 26px;
+            font-weight: 800;
+            line-height: 1;
+        }
+
+        .timer-circle small {
+            font-size: 8px;
+            font-weight: 700;
+            margin-top: 5px;
+        }
+
+        .timer-circle.danger {
+            color: #dc2626;
+            border-color: #fecaca;
+            background: #fef2f2;
+        }
+
+    .practice-progress {
+        height: 6px;
+        margin: 28px 0;
+        border-radius: 10px;
+        background: #edf2f7;
+    }
+
+        .practice-progress .progress-bar {
+            background: #3b82f6;
+            border-radius: 10px;
+            transition: width .2s ease;
+        }
+
+    .word-card {
+        padding: 26px 20px;
+        text-align: center;
+        background: #f8fafc;
+        border: 1px solid #eef2f7;
+        border-radius: 18px;
+    }
+
+    .native-word {
+        font-size: 28px;
+        font-weight: 750;
+        line-height: 1.5;
+        margin: 12px 0;
+        overflow-wrap: anywhere;
+    }
+
+    .word-hint {
+        color: #94a3b8;
+        font-size: 13px;
+    }
+
+    .answer-area {
+        position: relative;
+        margin-top: 30px;
+        cursor: text;
+    }
+
+    .letter-boxes {
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 7px;
+        min-height: 52px;
+    }
+
+    .letter-box {
+        width: 38px;
+        height: 48px;
+        border-bottom: 3px solid #cbd5e1;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 24px;
+        font-weight: 750;
+        text-transform: uppercase;
+        color: #2563eb;
+        transition: all .15s ease;
+    }
+
+        .letter-box.current {
+            border-bottom-color: #3b82f6;
+            background: #eff6ff;
+            border-radius: 8px 8px 0 0;
+        }
+
+        .letter-box.filled {
+            border-bottom-color: #22c55e;
+            color: #15803d;
+        }
+
+        .letter-box.given {
+            color: #64748b;
+            border-bottom-color: #94a3b8;
+        }
+
+        .letter-box.space {
+            width: 20px;
+            border-bottom-color: transparent;
+        }
+
+    .typing-capture {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        opacity: 0;
+        left: 50%;
+        bottom: 0;
+        pointer-events: none;
+    }
+
+    .feedback {
+        min-height: 24px;
+        margin-top: 18px;
+        text-align: center;
+        font-size: 13px;
+        color: #64748b;
+    }
+
+        .feedback.success {
+            color: #15803d;
+            font-weight: 700;
+        }
+
+        .feedback.error {
+            color: #dc2626;
+        }
+
+    .practice-footer {
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        margin-top: 24px;
+    }
+
+        .practice-footer .btn {
+            border-radius: 12px;
+            padding: 12px 18px;
+            font-weight: 650;
+        }
+
+    .practice-tip {
+        margin-top: 20px;
+        color: #64748b;
+        font-size: 13px;
+        text-align: center;
+    }
+
+    .answer-area.shake {
+        animation: shake .25s ease;
+    }
+
+    @@keyframes shake {
+        0%, 100% {
+            transform: translateX(0);
+        }
+
+        25% {
+            transform: translateX(-4px);
+        }
+
+        75% {
+            transform: translateX(4px);
+        }
+    }
+
+    @@media (max-width: 480px) {
+        .practice-page {
+            margin: 20px auto;
+        }
+
+        .practice-card {
+            padding: 22px 16px;
+            border-radius: 18px;
+        }
+
+        .practice-header h2 {
+            font-size: 23px;
+        }
+
+        .letter-boxes {
+            gap: 4px;
+        }
+
+        .letter-box {
+            width: 29px;
+            height: 42px;
+            font-size: 20px;
+        }
+
+            .letter-box.space {
+                width: 12px;
+            }
+    }
+</style>
 
 @section Scripts {
     <script>
-        $("#btnRead").click((e) => {
-            e.preventDefault();
-            let foreignWord = $("#ForeignWord").val();
-            responsiveVoice.speak(foreignWord, "US English Male");
-        });
+        (() => {
+            const form = document.getElementById("practiceForm");
+            const target = document.getElementById("ForeignWord").value;
+            const answerInput = document.getElementById("Answer");
+            const typingInput = document.getElementById("typingInput");
+            const letterBoxes = document.getElementById("letterBoxes");
+            const timerElement = document.getElementById("timer");
+            const timerCircle = document.getElementById("timerCircle");
+            const progressBar = document.getElementById("progressBar");
+            const feedback = document.getElementById("feedback");
+            const answerArea = document.getElementById("answerArea");
 
-        $("#btnReadSentence").click((e) => {
-            e.preventDefault();
-            let originalSentence = $("#OriginalSentence").val();
-            responsiveVoice.speak(originalSentence, "US English Male");
-            return;
-        });
+            if (!target || target.length === 0) {
+                typingInput.disabled = true;
+                feedback.textContent = "No vocabulary word is available.";
+                return;
+            }
+
+            // The first character is given.
+            const characters = Array.from(target);
+            const filled = characters.map((char, index) =>
+                index === 0 || char === " " ? char : ""
+            );
+
+            let currentIndex = 1;
+            let remainingSeconds = 10;
+            let finished = false;
+            let timerId = null;
+
+            function skipSpaces() {
+                while (currentIndex < characters.length &&
+                       characters[currentIndex] === " ") {
+                    filled[currentIndex] = " ";
+                    currentIndex++;
+                }
+            }
+
+            function updateAnswer() {
+                // Send only the characters already revealed to the server.
+                answerInput.value = filled.join("");
+            }
+
+            function renderBoxes() {
+                letterBoxes.replaceChildren();
+
+                characters.forEach((char, index) => {
+                    const box = document.createElement("div");
+
+                    if (char === " ") {
+                        box.className = "letter-box space";
+                        box.setAttribute("aria-hidden", "true");
+                    } else {
+                        box.className = "letter-box";
+                        box.textContent = filled[index] || "_";
+
+                        if (index === 0) {
+                            box.classList.add("given");
+                        } else if (filled[index]) {
+                            box.classList.add("filled");
+                        } else if (index === currentIndex && !finished) {
+                            box.classList.add("current");
+                        }
+                    }
+
+                    letterBoxes.appendChild(box);
+                });
+
+                const completed = filled.filter((char, index) =>
+                    characters[index] !== " " && char !== ""
+                ).length;
+
+                const total = characters.filter(char => char !== " ").length;
+                progressBar.style.width = `${completed / total * 100}%`;
+            }
+
+            function finish(message) {
+                if (finished) return;
+
+                finished = true;
+                clearInterval(timerId);
+                typingInput.disabled = true;
+                updateAnswer();
+
+                if (message) {
+                    feedback.textContent = message;
+                    feedback.className = "feedback success";
+                }
+
+                // POST to the existing Practice action to load the next word.
+                setTimeout(() => form.requestSubmit(), 350);
+            }
+
+            function tick() {
+                remainingSeconds--;
+                timerElement.textContent = remainingSeconds;
+
+                if (remainingSeconds <= 3) {
+                    timerCircle.classList.add("danger");
+                }
+
+                if (remainingSeconds <= 0) {
+                    finish("Time's up! Moving to the next word...");
+                }
+            }
+
+            function startTimer() {
+                timerId = setInterval(tick, 1000);
+            }
+
+            skipSpaces();
+            updateAnswer();
+            renderBoxes();
+            startTimer();
+
+            typingInput.addEventListener("keydown", event => {
+                if (finished) return;
+
+                if (event.key === "Backspace") {
+                    event.preventDefault();
+                    feedback.textContent = "Correct letters cannot be erased.";
+                    feedback.className = "feedback";
+                    return;
+                }
+
+                if (event.key.length !== 1 || event.ctrlKey ||
+                    event.altKey || event.metaKey) {
+                    return;
+                }
+
+                event.preventDefault();
+
+                if (currentIndex >= characters.length) return;
+
+                const expected = characters[currentIndex];
+
+                if (event.key.toLocaleLowerCase() ===
+                    expected.toLocaleLowerCase()) {
+
+                    filled[currentIndex] = expected;
+                    currentIndex++;
+                    skipSpaces();
+
+                    updateAnswer();
+                    renderBoxes();
+
+                    feedback.textContent = "Correct!";
+                    feedback.className = "feedback success";
+
+                    if (currentIndex >= characters.length) {
+                        finish("Excellent! Moving to the next word...");
+                    }
+                } else {
+                    feedback.textContent = "Try again!";
+                    feedback.className = "feedback error";
+
+                    answerArea.classList.remove("shake");
+                    void answerArea.offsetWidth;
+                    answerArea.classList.add("shake");
+                }
+            });
+
+            answerArea.addEventListener("click", () => typingInput.focus());
+
+            document.getElementById("btnRead").addEventListener("click", () => {
+                if (window.responsiveVoice) {
+                    responsiveVoice.speak(target, "US English Male");
+                }
+            });
+
+            form.addEventListener("submit", event => {
+                if (finished) return;
+
+                // Manual submission: stop the timer and send the current answer.
+                finished = true;
+                clearInterval(timerId);
+                updateAnswer();
+            });
+
+            // Focus the keyboard capture input when the page opens.
+            typingInput.focus();
+        })();
     </script>
 }
