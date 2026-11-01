@@ -26,7 +26,7 @@ namespace VocaSRS.Controllers
 
         public IActionResult Practice()
         {
-            var vocabulary = _service.GetPracticeVocabulary();
+            PracticeResponseModel vocabulary = _service.GetQuiz();
             if (vocabulary == null)
             {
                 return RedirectToAction("Index");
@@ -39,8 +39,44 @@ namespace VocaSRS.Controllers
         [HttpPost]
         public IActionResult Practice(PracticeRequestModel model)
         {
-            _service.CheckAnswer(model);
             return RedirectToAction("Practice");
+        }
+
+        public IActionResult Quiz()
+        {
+            PracticeResponseModel vocabulary = _service.GetQuiz();
+            if (vocabulary == null)
+            {
+                return RedirectToAction("Index");
+            }
+
+            ViewBag.Vocabulary = vocabulary;
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult Quiz(PracticeRequestModel model)
+        {
+            return RedirectToAction("Quiz");
+        }
+
+        public IActionResult Flashcard()
+        {
+            PracticeResponseModel vocabulary = _service.GetFlashcard();
+            if (vocabulary == null)
+            {
+                return RedirectToAction("Index");
+            }
+
+            ViewBag.Vocabulary = vocabulary;
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult Flashcard(FlashcardRequestModel model)
+        {
+            _service.LearningFlashcard(model);
+            return RedirectToAction("Flashcard");
         }
     }
 }

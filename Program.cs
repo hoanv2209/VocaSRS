@@ -8,14 +8,14 @@ namespace VocaSRS
     {
         public static void Main(string[] args)
         {
-            var builder = WebApplication.CreateBuilder(args);
+            WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
             builder.Services.AddScoped<IVocaService, VocaService>();
             builder.Services.AddDbContext<VocaContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("VocaSrsConnection")));
 
-            var app = builder.Build();
+            WebApplication app = builder.Build();
 
             CreateDbIfNotExists(app);
 
@@ -34,17 +34,17 @@ namespace VocaSRS
 
         private static void CreateDbIfNotExists(IHost host)
         {
-            using (var scope = host.Services.CreateScope())
+            using (IServiceScope scope = host.Services.CreateScope())
             {
-                var services = scope.ServiceProvider;
+                IServiceProvider services = scope.ServiceProvider;
                 try
                 {
-                    var context = services.GetRequiredService<VocaContext>();
+                    VocaContext context = services.GetRequiredService<VocaContext>();
                     context.Database.EnsureCreated();
                 }
                 catch (Exception ex)
                 {
-                    var logger = services.GetRequiredService<ILogger<Program>>();
+                    ILogger<Program> logger = services.GetRequiredService<ILogger<Program>>();
                     logger.LogError(ex, "An error occurred creating the DB.");
                 }
             }

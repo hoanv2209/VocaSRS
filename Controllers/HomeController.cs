@@ -15,8 +15,6 @@ namespace VocaSRS.Controllers
         public IActionResult Index()
         {
             ViewBag.VocabularyInfo = _service.GetVocabularyDashboardInfo();
-            ViewBag.ParagraphInfo = _service.GetParagraphDashboardInfo();
-            ViewBag.DailyReviewInfo = _service.GetDailyReviewDashboardInfo();
 
             return View();
         }

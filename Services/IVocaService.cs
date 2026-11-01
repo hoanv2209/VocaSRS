@@ -6,26 +6,12 @@ namespace VocaSRS.Services
     {
         DashboardResponseModel GetVocabularyDashboardInfo();
 
-        DashboardResponseModel GetDailyReviewDashboardInfo();
-
-        DashboardResponseModel GetParagraphDashboardInfo();
-
         void AddVocabulary(VocabularyRequestModel model);
 
-        PracticeResponseModel GetPracticeVocabulary();
+        PracticeResponseModel GetQuiz();
 
-        bool CheckAnswer(PracticeRequestModel model);
+        PracticeResponseModel GetFlashcard();
 
-        void AddParagraph(ParagraphRequestModel model);
-
-        ParagraphResponseModel GetRandomParagraph();
-
-        void PracticeParagraph(int id);
-
-        DailyReviewResponseModel GetDailyReviewLesson();
-
-        void AddDailyReview(DailyReviewRequestModel model);
-
-        void ReviewLesson(int id);
+        void LearningFlashcard(FlashcardRequestModel model);
     }
 }

@@ -17,7 +17,9 @@
 
         bool isHome = controller == "Home" && action == "Index";
         bool isVocabulary = controller == "Vocabulary" && action == "Index";
+        bool isFlashcard = controller == "Vocabulary" && action == "Flashcard";
         bool isPractice = controller == "Vocabulary" && action == "Practice";
+        bool isQuiz = controller == "Vocabulary" && action == "Quiz";
     }
 
     <header class="site-header">
@@ -58,11 +60,26 @@
                         </li>
 
                         <li class="nav-item">
+                            <a class="nav-link nav-link-practice @(isFlashcard ? "active" : "")"
+                               asp-controller="Vocabulary"
+                               asp-action="Flashcard">
+                                Flashcard
+                            </a>
+                        </li>
+
+                        <li class="nav-item">
                             <a class="nav-link nav-link-practice @(isPractice ? "active" : "")"
                                asp-controller="Vocabulary"
                                asp-action="Practice">
                                 Luyện tập
-                                <span class="practice-arrow">↗</span>
+                            </a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link nav-link-practice @(isQuiz ? "active" : "")"
+                               asp-controller="Vocabulary"
+                               asp-action="Quiz">
+                                Quiz
                             </a>
                         </li>
                     </ul>
@@ -84,7 +101,6 @@
 
     <script src="~/lib/jquery/dist/jquery-3.6.0.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://code.responsivevoice.org/responsivevoice.js?key=XZFcTIAF"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>

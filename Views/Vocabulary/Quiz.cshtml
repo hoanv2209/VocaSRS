@@ -1,0 +1,501 @@
+﻿@model PracticeRequestModel
+@using System
+@using System.Linq
+
+@{
+	ViewData["Title"] = "Vocabulary Quiz";
+
+	PracticeResponseModel vocabulary = ViewBag.Vocabulary;
+
+	string[] options = vocabulary?.Options ?? Array.Empty<string>();
+	string correctAnswer = vocabulary?.ForeignWord ?? "";
+
+	var wrongAnswers = options
+		.Where(x => !string.IsNullOrWhiteSpace(x))
+		.Where(x => !string.Equals(
+			x.Trim(), correctAnswer.Trim(),
+			StringComparison.OrdinalIgnoreCase))
+		.Distinct(StringComparer.OrdinalIgnoreCase)
+		.OrderBy(_ => Guid.NewGuid())
+		.Take(3)
+		.ToArray();
+
+	var answers = wrongAnswers
+		.Concat(string.IsNullOrWhiteSpace(correctAnswer)
+			? Array.Empty<string>()
+			: new[] { correctAnswer })
+		.OrderBy(_ => Guid.NewGuid())
+		.ToArray();
+}
+
+<style>
+	.quiz-page {
+		min-height: 75vh;
+		padding: 36px 16px;
+		display: flex;
+		justify-content: center;
+		align-items: flex-start;
+		background: #f4f7fb;
+		border-radius: 20px;
+	}
+
+	.quiz-card {
+		width: 100%;
+		max-width: 680px;
+		padding: 32px;
+		background: #fff;
+		border: 1px solid #e7ecf3;
+		border-radius: 24px;
+		box-shadow: 0 12px 40px rgba(31, 45, 61, .08);
+	}
+
+	.quiz-header {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		gap: 16px;
+		margin-bottom: 28px;
+	}
+
+	.quiz-brand {
+		color: #64748b;
+		font-size: 14px;
+		font-weight: 800;
+		letter-spacing: 1px;
+		text-transform: uppercase;
+	}
+
+	.timer-box {
+		display: flex;
+		align-items: center;
+		gap: 8px;
+		padding: 10px 15px;
+		border-radius: 14px;
+		background: #fff1f2;
+		color: #e11d48;
+		font-size: 18px;
+		font-weight: 800;
+		font-variant-numeric: tabular-nums;
+	}
+
+		.timer-box.urgent {
+			background: #e11d48;
+			color: white;
+		}
+
+	.progress-track {
+		height: 6px;
+		margin-bottom: 32px;
+		overflow: hidden;
+		border-radius: 10px;
+		background: #e9eef5;
+	}
+
+	.progress-bar {
+		width: 100%;
+		height: 100%;
+		border-radius: inherit;
+		background: #6366f1;
+		transition: width 1s linear;
+	}
+
+	.question-label {
+		margin-bottom: 12px;
+		color: #64748b;
+		font-size: 13px;
+		font-weight: 800;
+		letter-spacing: .6px;
+	}
+
+	.native-word {
+		min-height: 110px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		padding: 24px;
+		margin-bottom: 30px;
+		border-radius: 18px;
+		background: linear-gradient(135deg, #eef2ff, #f5f3ff);
+		color: #312e81;
+		font-size: 32px;
+		font-weight: 800;
+		line-height: 1.4;
+		text-align: center;
+		overflow-wrap: anywhere;
+	}
+
+	.answer-heading {
+		margin-bottom: 14px;
+		color: #475569;
+		font-size: 14px;
+		font-weight: 700;
+	}
+
+	.answers {
+		display: grid;
+		grid-template-columns: 1fr 1fr;
+		gap: 12px;
+	}
+
+	.answer-btn {
+		min-height: 76px;
+		padding: 16px;
+		display: flex;
+		align-items: center;
+		gap: 12px;
+		border: 2px solid #e2e8f0;
+		border-radius: 16px;
+		background: #fff;
+		color: #1e293b;
+		font-size: 16px;
+		font-weight: 600;
+		text-align: left;
+		cursor: pointer;
+		overflow-wrap: anywhere;
+		transition: border-color .18s, background .18s, transform .18s, box-shadow .18s;
+	}
+
+		.answer-btn:hover:not(:disabled) {
+			border-color: #818cf8;
+			background: #f5f3ff;
+			transform: translateY(-2px);
+			box-shadow: 0 5px 14px rgba(99, 102, 241, .10);
+		}
+
+	.answer-letter {
+		flex-shrink: 0;
+		width: 32px;
+		height: 32px;
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		border-radius: 10px;
+		background: #f1f5f9;
+		color: #64748b;
+		font-size: 14px;
+		font-weight: 800;
+	}
+
+	.answer-btn.correct {
+		border-color: #16a34a;
+		background: #dcfce7;
+		color: #166534;
+	}
+
+		.answer-btn.correct .answer-letter {
+			background: #16a34a;
+			color: white;
+		}
+
+	.answer-btn.incorrect {
+		border-color: #dc2626;
+		background: #fee2e2;
+		color: #991b1b;
+	}
+
+		.answer-btn.incorrect .answer-letter {
+			background: #dc2626;
+			color: white;
+		}
+
+	.answer-btn:disabled {
+		cursor: default;
+	}
+
+	.answer-result {
+		margin-top: 18px;
+		font-size: 16px;
+		font-weight: 800;
+		text-align: center;
+	}
+
+		.answer-result.correct {
+			color: #16a34a;
+		}
+
+		.answer-result.incorrect {
+			color: #dc2626;
+		}
+
+	.submit-btn {
+		width: 100%;
+		margin-top: 22px;
+		padding: 15px 20px;
+		border: 0;
+		border-radius: 14px;
+		background: #6366f1;
+		color: white;
+		font-size: 16px;
+		font-weight: 700;
+		cursor: pointer;
+	}
+
+		.submit-btn:hover:not(:disabled) {
+			background: #4f46e5;
+		}
+
+		.submit-btn:disabled {
+			cursor: default;
+			opacity: .65;
+		}
+
+	.quiz-footer {
+		margin-top: 22px;
+		color: #94a3b8;
+		font-size: 13px;
+		text-align: center;
+	}
+
+	@@media screen and (max-width: 500px) {
+		.quiz-page {
+			padding: 16px 8px;
+		}
+
+		.quiz-card {
+			padding: 22px 16px;
+			border-radius: 18px;
+		}
+
+		.native-word {
+			min-height: 90px;
+			padding: 18px;
+			font-size: 26px;
+		}
+
+		.answers {
+			grid-template-columns: 1fr;
+		}
+
+		.answer-btn {
+			min-height: 62px;
+		}
+	}
+</style>
+
+<div class="quiz-page">
+	<div class="quiz-card">
+
+		<div class="quiz-header">
+			<div class="quiz-brand">Vocabulary Practice</div>
+
+			<div class="timer-box" id="timerBox">
+				<span>⏱</span>
+				<span id="timer">5</span>s
+			</div>
+		</div>
+
+		<div class="progress-track">
+			<div class="progress-bar" id="progressBar"></div>
+		</div>
+
+		<div class="question-label">WHAT DOES THIS WORD MEAN?</div>
+
+		<div class="native-word">
+			@Html.Raw(vocabulary?.NativeWord)
+		</div>
+
+		<div class="answer-heading">
+			Choose the correct translation
+		</div>
+
+		<form id="quizForm"
+			  asp-controller="Vocabulary"
+			  asp-action="Quiz"
+			  method="post">
+
+			@Html.AntiForgeryToken()
+
+			<input type="hidden"
+				   name="Id"
+				   value="@(vocabulary?.Id)" />
+
+			<input type="hidden"
+				   name="Answer"
+				   id="answerInput"
+				   value="" />
+
+			<div class="answers">
+				@for (int i = 0; i < answers.Length; i++)
+				{
+					<button type="button"
+							class="answer-btn"
+							data-answer="@answers[i]">
+
+						<span class="answer-letter">
+							@((char)('A' + i))
+						</span>
+
+						<span>@answers[i]</span>
+					</button>
+				}
+			</div>
+
+			<div id="answerResult"
+				 class="answer-result"
+				 aria-live="polite"></div>
+		</form>
+
+		<div class="quiz-footer">
+			Select an answer before the timer runs out.
+		</div>
+	</div>
+</div>
+
+<script>
+	(() => {
+		const form = document.getElementById("quizForm");
+		const timerElement = document.getElementById("timer");
+		const timerBox = document.getElementById("timerBox");
+		const progressBar = document.getElementById("progressBar");
+		const answerInput = document.getElementById("answerInput");
+		const correctAnswer = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(correctAnswer)
+																																);
+		const resultElement = document.getElementById("answerResult");
+		const buttons = document.querySelectorAll(".answer-btn");
+
+		let remaining = 5;
+		let submitted = false;
+		let formSubmitted = false;
+		let countdown;
+
+		function normalizeAnswer(value) {
+			return (value ?? "").trim().toLocaleLowerCase();
+		}
+
+		function lockButtons() {
+			buttons.forEach(button => {
+				button.disabled = true;
+			});
+		}
+
+		function submitAnswer(answer) {
+			// Chỉ bỏ qua nếu form đã thực sự được gửi
+			if (formSubmitted) return;
+
+			formSubmitted = true;
+			submitted = true;
+
+			answerInput.value = answer ?? "";
+
+			clearInterval(countdown);
+			lockButtons();
+
+			form.submit();
+		}
+
+		function highlightCorrectAnswer() {
+			buttons.forEach(button => {
+				button.disabled = true;
+
+				if (
+					normalizeAnswer(button.dataset.answer) ===
+					normalizeAnswer(correctAnswer)
+				) {
+					button.classList.add("correct");
+				}
+			});
+		}
+
+		function selectAnswer(button) {
+			if (submitted) return;
+
+			submitted = true;
+			clearInterval(countdown);
+
+			const selectedAnswer = button.dataset.answer ?? "";
+			answerInput.value = selectedAnswer;
+
+			const isCorrect =
+				normalizeAnswer(selectedAnswer) ===
+				normalizeAnswer(correctAnswer);
+
+			buttons.forEach(item => {
+				item.disabled = true;
+
+				if (
+					normalizeAnswer(item.dataset.answer) ===
+					normalizeAnswer(correctAnswer)
+				) {
+					item.classList.add("correct");
+				}
+			});
+
+			if (isCorrect) {
+				resultElement.textContent = "✓ Chính xác! Great job!";
+				resultElement.className = "answer-result correct";
+			} else {
+				button.classList.add("incorrect");
+				resultElement.textContent =
+					"✗ Chưa chính xác! Đáp án đúng: " + correctAnswer;
+				resultElement.className = "answer-result incorrect";
+			}
+
+			speakWord(correctAnswer);
+
+			// Cho người dùng nhìn thấy màu đúng/sai trước khi submit.
+			setTimeout(() => {
+				submitAnswer(selectedAnswer);
+			}, 2000);
+		}
+
+		document.addEventListener("keydown", function (event) {
+			if (event.code !== "Space") return;
+
+			// Tránh kích hoạt khi đang nhập liệu
+			const tag = event.target.tagName;
+			if (["INPUT", "TEXTAREA", "SELECT"].includes(tag) || event.target.isContentEditable) {
+				return;
+			}
+
+			// Tránh cuộn trang khi bấm Space
+			event.preventDefault();
+
+			// Nếu chưa trả lời, chuyển câu với Answer = ""
+			if (!formSubmitted) {
+				submitAnswer("");
+			}
+		});
+
+		buttons.forEach(button => {
+			button.addEventListener("click", () => {
+				selectAnswer(button);
+			});
+		});
+
+		countdown = setInterval(() => {
+			if (submitted) {
+				clearInterval(countdown);
+				return;
+			}
+
+			remaining = Math.max(0, remaining - 1);
+
+			timerElement.textContent = remaining;
+			progressBar.style.width = (remaining / 5 * 100) + "%";
+
+			if (remaining <= 2) {
+				timerBox.classList.add("urgent");
+			}
+
+			if (remaining <= 0) {
+				clearInterval(countdown);
+
+				// Highlight đáp án đúng dù người dùng chưa chọn
+				highlightCorrectAnswer();
+
+				resultElement.textContent =
+					"⏰ Hết giờ! Đáp án đúng: " + correctAnswer;
+				resultElement.className = "answer-result correct";
+
+				// Cho người dùng xem đáp án trước khi gửi form
+				submitted = true;
+
+				speakWord(correctAnswer);
+
+				setTimeout(() => {
+					submitAnswer("");
+				}, 2000);
+			}
+		}, 1000);
+	})();
+</script>

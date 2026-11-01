@@ -1,6 +1,4 @@
-﻿using System.Text;
-using System.Text.RegularExpressions;
-using VocaSRS.Context;
+﻿using VocaSRS.Context;
 using VocaSRS.Context.Entities;
 using VocaSRS.Extensions;
 using VocaSRS.Models;
@@ -33,10 +31,20 @@ namespace VocaSRS.Services
 
         public void AddVocabulary(VocabularyRequestModel model)
         {
+            string nativeWord = model.NativeWord.Trim().ToLower();
+            string foreignWord = model.ForeignWord.Trim().ToLower();
+
+            Vocabulary? existingVocabulary = _context.Vocabularies.FirstOrDefault(v => v.NativeWord == nativeWord && v.ForeignWord == foreignWord);
+
+            if (existingVocabulary != null)
+            {
+                return;
+            }
+
             _context.Vocabularies.Add(new Vocabulary
             {
-                NativeWord = model.NativeWord.Trim(),
-                ForeignWord = model.ForeignWord.Trim(),
+                NativeWord = nativeWord,
+                ForeignWord = foreignWord,
                 Status = PracticeStatus.Unseen,
                 PracticeDate = null
             });
@@ -44,16 +52,16 @@ namespace VocaSRS.Services
             _context.SaveChanges();
         }
 
-        public PracticeResponseModel GetPracticeVocabulary()
+        private PracticeResponseModel GetPracticeVocabulary()
         {
-            var today = DateTime.UtcNow.Date;
-            var firstBoxReviewDate = today.AddDays(-1);
-            var secondBoxReviewDate = today.AddDays(-3);
-            var thirdBoxReviewDate = today.AddDays(-10);
-            var fourthBoxReviewDate = today.AddDays(-30);
-            var fifthBoxReviewDate = today.AddDays(-90);
+            DateTime today = DateTime.UtcNow.Date;
+            DateTime firstBoxReviewDate = today.AddDays(-1);
+            DateTime secondBoxReviewDate = today.AddDays(-2);
+            DateTime thirdBoxReviewDate = today.AddDays(-3);
+            DateTime fourthBoxReviewDate = today.AddDays(-5);
+            DateTime fifthBoxReviewDate = today.AddDays(-10);
 
-            var word = _context.Vocabularies.Where(p => p.Status == PracticeStatus.Unseen
+            Vocabulary? word = _context.Vocabularies.Where(p => p.Status == PracticeStatus.Unseen
                                                 || (p.Status == PracticeStatus.First && p.PracticeDate <= firstBoxReviewDate)
                                                 || (p.Status == PracticeStatus.Second && p.PracticeDate <= secondBoxReviewDate)
                                                 || (p.Status == PracticeStatus.Third && p.PracticeDate <= thirdBoxReviewDate)
@@ -75,152 +83,78 @@ namespace VocaSRS.Services
             };
         }
 
-        public bool CheckAnswer(PracticeRequestModel model)
+        public PracticeResponseModel GetQuiz()
         {
-            var vocabulary = _context.Vocabularies.Single(p => p.Id == model.Id);
+            DateTime today = DateTime.UtcNow.Date;
 
-            if (vocabulary.ForeignWord.ToLower() == model.Answer.ToLower().Trim())
+            Vocabulary? word = _context.Vocabularies
+                                .Where(p => p.Status != PracticeStatus.Memorized && p.PracticeDate == today)
+                                .OrderBy(p => Guid.NewGuid())
+                                .FirstOrDefault();
+
+            if (word == null)
             {
-                vocabulary.PracticeDate = DateTime.UtcNow.Date;
-                vocabulary.Status = vocabulary.Status.Next();
-                _context.SaveChanges();
-
-                return true;
+                return null;
             }
 
-            vocabulary.PracticeDate = null;
-            vocabulary.Status = PracticeStatus.Unseen;
-            _context.SaveChanges();
+            string[] options = _context.Vocabularies.Where(p => p != word)
+                                    .OrderBy(p => Guid.NewGuid())
+                                    .Take(3)
+                                    .Select(p => p.ForeignWord)
+                                    .ToArray();
 
-            return false;
-        }
-
-        public void AddParagraph(ParagraphRequestModel model)
-        {
-            _context.Paragraphs.Add(new Paragraph
+            return new PracticeResponseModel
             {
-                Title = model.Title.Trim(),
-                Content = model.Content.Trim(),
-                SoundPath = model.FileName.Trim(),
-                Status = PracticeStatus.Unseen
-            });
-
-            _context.SaveChanges();
-        }
-
-        public ParagraphResponseModel GetRandomParagraph()
-        {
-            var today = DateTime.UtcNow.Date;
-            var firstBoxReviewDate = today.AddDays(-1);
-            var secondBoxReviewDate = today.AddDays(-3);
-            var thirdBoxReviewDate = today.AddDays(-10);
-            var fourthBoxReviewDate = today.AddDays(-30);
-            var fifthBoxReviewDate = today.AddDays(-90);
-
-            var paragraph = _context.Paragraphs.Where(p => p.Status == PracticeStatus.Unseen
-                            || (p.Status == PracticeStatus.First && p.PracticeDate <= firstBoxReviewDate)
-                            || (p.Status == PracticeStatus.Second && p.PracticeDate <= secondBoxReviewDate)
-                            || (p.Status == PracticeStatus.Third && p.PracticeDate <= thirdBoxReviewDate)
-                            || (p.Status == PracticeStatus.Fourth && p.PracticeDate <= fourthBoxReviewDate)
-                            || (p.Status == PracticeStatus.Fifth && p.PracticeDate <= fifthBoxReviewDate))
-                .OrderBy(p => Guid.NewGuid())
-                .Select(p => new ParagraphResponseModel
-                {
-                    Id = p.Id,
-                    Title = p.Title,
-                    Content = p.Content,
-                    FileName = p.SoundPath,
-                })
-                .FirstOrDefault();
-
-            return paragraph;
-        }
-
-        public void PracticeParagraph(int id)
-        {
-            var paragraph = _context.Paragraphs.Single(p => p.Id == id);
-            paragraph.Status = paragraph.Status.Next();
-            paragraph.PracticeDate = DateTime.Now;
-            _context.SaveChanges();
-        }
-
-        public DailyReviewResponseModel GetDailyReviewLesson()
-        {
-            var today = DateTime.UtcNow.Date;
-            var firstBoxReviewDate = today.AddDays(-1);
-            var secondBoxReviewDate = today.AddDays(-3);
-            var thirdBoxReviewDate = today.AddDays(-10);
-            var fourthBoxReviewDate = today.AddDays(-30);
-            var fifthBoxReviewDate = today.AddDays(-90);
-
-            var lesson = _context.DailyReviews
-                .Where(p => p.Status == PracticeStatus.Unseen
-                            || (p.Status == PracticeStatus.First && p.PracticeDate <= firstBoxReviewDate)
-                            || (p.Status == PracticeStatus.Second && p.PracticeDate <= secondBoxReviewDate)
-                            || (p.Status == PracticeStatus.Third && p.PracticeDate <= thirdBoxReviewDate)
-                            || (p.Status == PracticeStatus.Fourth && p.PracticeDate <= fourthBoxReviewDate)
-                            || (p.Status == PracticeStatus.Fifth && p.PracticeDate <= fifthBoxReviewDate))
-                .OrderBy(p => Guid.NewGuid())
-                .Select(p => new DailyReviewResponseModel
-                {
-                    Id = p.Id,
-                    Title = p.Title,
-                    Description = p.Description
-                })
-                .FirstOrDefault();
-
-            return lesson;
-        }
-
-        public void AddDailyReview(DailyReviewRequestModel model)
-        {
-            var newDailyReviewItem = new DailyReview()
-            {
-                Title = model.Title,
-                Description = model.Description,
-                Status = PracticeStatus.Unseen
-            };
-
-            _context.DailyReviews.Add(newDailyReviewItem);
-            _context.SaveChanges();
-        }
-
-        public void ReviewLesson(int id)
-        {
-            var dailyReviewItem = _context.DailyReviews.Single(d => d.Id == id);
-            dailyReviewItem.Status = dailyReviewItem.Status.Next();
-            dailyReviewItem.PracticeDate = DateTime.Now;
-            _context.SaveChanges();
-        }
-
-        public DashboardResponseModel GetDailyReviewDashboardInfo()
-        {
-            return new DashboardResponseModel()
-            {
-                Total = _context.DailyReviews.Count(),
-                Memorized = _context.DailyReviews.Where(p => p.Status == PracticeStatus.Memorized).Count(),
-                Unseen = _context.DailyReviews.Where(p => p.Status == PracticeStatus.Unseen).Count(),
-                FirstReview = _context.DailyReviews.Where(p => p.Status == PracticeStatus.First).Count(),
-                SecondReview = _context.DailyReviews.Where(p => p.Status == PracticeStatus.Second).Count(),
-                ThirdReview = _context.DailyReviews.Where(p => p.Status == PracticeStatus.Third).Count(),
-                FourthReview = _context.DailyReviews.Where(p => p.Status == PracticeStatus.Fourth).Count(),
-                FifthReview = _context.DailyReviews.Where(p => p.Status == PracticeStatus.Fifth).Count()
+                Id = word.Id,
+                ForeignWord = word.ForeignWord,
+                NativeWord = word.NativeWord,
+                Options = options
             };
         }
 
-        public DashboardResponseModel GetParagraphDashboardInfo()
+        public PracticeResponseModel GetFlashcard()
         {
-            return new DashboardResponseModel()
+            DateTime today = DateTime.UtcNow.Date;
+            int practicedWordCount = _context.Vocabularies.Count(p => p.Status == PracticeStatus.First && p.PracticeDate == today);
+
+            if (practicedWordCount >= 50)
             {
-                Total = _context.Paragraphs.Count(),
-                Memorized = _context.Paragraphs.Where(p => p.Status == PracticeStatus.Memorized).Count(),
-                Unseen = _context.Paragraphs.Where(p => p.Status == PracticeStatus.Unseen).Count(),
-                FirstReview = _context.Paragraphs.Where(p => p.Status == PracticeStatus.First).Count(),
-                SecondReview = _context.Paragraphs.Where(p => p.Status == PracticeStatus.Second).Count(),
-                ThirdReview = _context.Paragraphs.Where(p => p.Status == PracticeStatus.Third).Count(),
-                FourthReview = _context.Paragraphs.Where(p => p.Status == PracticeStatus.Fourth).Count(),
-                FifthReview = _context.Paragraphs.Where(p => p.Status == PracticeStatus.Fifth).Count()
-            };
+                return null;
+            }
+
+            return GetPracticeVocabulary();
+        }
+
+        public void LearningFlashcard(FlashcardRequestModel model)
+        {
+            Vocabulary vocabulary = _context.Vocabularies.Single(p => p.Id == model.Id);
+
+            vocabulary.PracticeDate = DateTime.UtcNow.Date;
+
+            switch (model.PracticeStatus)
+            {
+                case 1:
+                    vocabulary.Status = PracticeStatus.First;
+                    break;
+                case 2:
+                    if (vocabulary.Status == PracticeStatus.Fifth)
+                    {
+                        vocabulary.Status = PracticeStatus.First;
+                    }
+                    else
+                    {
+                        vocabulary.Status = vocabulary.Status.Next();
+                    }
+                    break;
+                case 3:
+                    vocabulary.Status = PracticeStatus.Memorized;
+                    break;
+                default:
+                    vocabulary.Status = PracticeStatus.Unseen;
+                    break;
+            }
+
+            _context.SaveChanges();
         }
     }
 }

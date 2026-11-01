@@ -1,5 +1,4 @@
-﻿using System.Runtime.CompilerServices;
-using VocaSRS.Context.Entities;
+﻿using VocaSRS.Context.Entities;
 
 namespace VocaSRS.Extensions
 {

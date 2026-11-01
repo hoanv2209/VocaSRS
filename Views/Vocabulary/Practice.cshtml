@@ -13,7 +13,7 @@
             </div>
 
             <div class="timer-circle" id="timerCircle">
-                <span id="timer">10</span>
+                <span id="timer">15</span>
                 <small>SECONDS</small>
             </div>
         </div>
@@ -359,7 +359,7 @@
             );
 
             let currentIndex = 1;
-            let remainingSeconds = 10;
+            let remainingSeconds = 15;
             let finished = false;
             let timerId = null;
 
@@ -409,13 +409,37 @@
                 progressBar.style.width = `${completed / total * 100}%`;
             }
 
-            function finish(message) {
+            function finish(message, showForeignWord = false) {
                 if (finished) return;
 
                 finished = true;
                 clearInterval(timerId);
                 typingInput.disabled = true;
                 updateAnswer();
+
+                if (showForeignWord) {
+                    // Reveal the answer for 3 seconds before moving to the next word.
+                    feedback.textContent = target;
+                    feedback.className = "feedback success";
+                    letterBoxes.replaceChildren();
+
+                    characters.forEach((char, index) => {
+                        const box = document.createElement("div");
+
+                        if (char === " ") {
+                            box.className = "letter-box space";
+                            box.setAttribute("aria-hidden", "true");
+                        } else {
+                            box.className = "letter-box filled";
+                            box.textContent = char;
+                        }
+
+                        letterBoxes.appendChild(box);
+                    });
+
+                    setTimeout(() => form.requestSubmit(), 3000);
+                    return;
+                }
 
                 if (message) {
                     feedback.textContent = message;
@@ -435,7 +459,7 @@
                 }
 
                 if (remainingSeconds <= 0) {
-                    finish("Time's up! Moving to the next word...");
+                    finish("Time's up! The correct word is shown for 3 seconds.", true);
                 }
             }
 
@@ -498,9 +522,7 @@
             answerArea.addEventListener("click", () => typingInput.focus());
 
             document.getElementById("btnRead").addEventListener("click", () => {
-                if (window.responsiveVoice) {
-                    responsiveVoice.speak(target, "US English Male");
-                }
+                speakWord(target);
             });
 
             form.addEventListener("submit", event => {

@@ -7,5 +7,7 @@
         public string ForeignWord { get; set; }
 
         public string NativeWord { get; set; }
+
+        public string[] Options { get; set; }
     }
 }
