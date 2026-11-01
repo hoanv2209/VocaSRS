@@ -88,7 +88,9 @@ namespace VocaSRS.Services
             DateTime today = DateTime.UtcNow.Date;
 
             Vocabulary? word = _context.Vocabularies
-                                .Where(p => p.Status != PracticeStatus.Memorized && p.PracticeDate == today)
+                                .Where(p => p.Status != PracticeStatus.Unseen 
+                                            && p.Status != PracticeStatus.Memorized 
+                                            && p.PracticeDate == today)
                                 .OrderBy(p => Guid.NewGuid())
                                 .FirstOrDefault();
 

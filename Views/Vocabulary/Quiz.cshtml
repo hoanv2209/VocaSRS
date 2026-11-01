@@ -348,8 +348,7 @@
 		const timerBox = document.getElementById("timerBox");
 		const progressBar = document.getElementById("progressBar");
 		const answerInput = document.getElementById("answerInput");
-		const correctAnswer = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(correctAnswer)
-																																);
+		const correctAnswer = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(correctAnswer));
 		const resultElement = document.getElementById("answerResult");
 		const buttons = document.querySelectorAll(".answer-btn");
 

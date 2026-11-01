@@ -29,7 +29,7 @@ namespace VocaSRS.Controllers
             PracticeResponseModel vocabulary = _service.GetQuiz();
             if (vocabulary == null)
             {
-                return RedirectToAction("Index");
+                return RedirectToAction("Flashcard");
             }
 
             ViewBag.Vocabulary = vocabulary;
@@ -47,7 +47,7 @@ namespace VocaSRS.Controllers
             PracticeResponseModel vocabulary = _service.GetQuiz();
             if (vocabulary == null)
             {
-                return RedirectToAction("Index");
+                return RedirectToAction("Flashcard");
             }
 
             ViewBag.Vocabulary = vocabulary;
