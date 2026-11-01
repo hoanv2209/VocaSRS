@@ -412,6 +412,8 @@
             function finish(message, showForeignWord = false) {
                 if (finished) return;
 
+                speakWord(target);
+
                 finished = true;
                 clearInterval(timerId);
                 typingInput.disabled = true;
@@ -447,7 +449,7 @@
                 }
 
                 // POST to the existing Practice action to load the next word.
-                setTimeout(() => form.requestSubmit(), 350);
+                setTimeout(() => form.requestSubmit(), 2000);
             }
 
             function tick() {

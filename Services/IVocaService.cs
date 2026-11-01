@@ -13,5 +13,7 @@ namespace VocaSRS.Services
         PracticeResponseModel GetFlashcard();
 
         void LearningFlashcard(FlashcardRequestModel model);
+
+        void LearningQuiz(PracticeRequestModel model);
     }
 }

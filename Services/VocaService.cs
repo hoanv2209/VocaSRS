@@ -57,8 +57,8 @@ namespace VocaSRS.Services
             DateTime today = DateTime.UtcNow.Date;
             DateTime firstBoxReviewDate = today.AddDays(-1);
             DateTime secondBoxReviewDate = today.AddDays(-2);
-            DateTime thirdBoxReviewDate = today.AddDays(-3);
-            DateTime fourthBoxReviewDate = today.AddDays(-5);
+            DateTime thirdBoxReviewDate = today.AddDays(-4);
+            DateTime fourthBoxReviewDate = today.AddDays(-6);
             DateTime fifthBoxReviewDate = today.AddDays(-10);
 
             Vocabulary? word = _context.Vocabularies.Where(p => p.Status == PracticeStatus.Unseen
@@ -88,10 +88,12 @@ namespace VocaSRS.Services
             DateTime today = DateTime.UtcNow.Date;
 
             Vocabulary? word = _context.Vocabularies
-                                .Where(p => p.Status != PracticeStatus.Unseen 
-                                            && p.Status != PracticeStatus.Memorized 
-                                            && p.PracticeDate == today)
-                                .OrderBy(p => Guid.NewGuid())
+                                .Where(p => p.Status != PracticeStatus.Unseen
+                                            && p.Status != PracticeStatus.Memorized
+                                            && p.PracticeDate == today
+                                            && p.Count < 3)
+                                .OrderBy(p => p.Count)
+                                .ThenBy(p => Guid.NewGuid())
                                 .FirstOrDefault();
 
             if (word == null)
@@ -132,6 +134,7 @@ namespace VocaSRS.Services
             Vocabulary vocabulary = _context.Vocabularies.Single(p => p.Id == model.Id);
 
             vocabulary.PracticeDate = DateTime.UtcNow.Date;
+            vocabulary.Count = 0;
 
             switch (model.PracticeStatus)
             {
@@ -154,6 +157,21 @@ namespace VocaSRS.Services
                 default:
                     vocabulary.Status = PracticeStatus.Unseen;
                     break;
+            }
+
+            _context.SaveChanges();
+        }
+
+        public void LearningQuiz(PracticeRequestModel model)
+        {
+            Vocabulary vocabulary = _context.Vocabularies.Single(p => p.Id == model.Id);
+            if (vocabulary.ForeignWord == model.Answer.Trim().ToLower())
+            {
+                vocabulary.Count++;
+            }
+            else
+            {
+                vocabulary.Count = 0;
             }
 
             _context.SaveChanges();

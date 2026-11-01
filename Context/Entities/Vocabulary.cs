@@ -14,5 +14,7 @@ namespace VocaSRS.Context.Entities
         public PracticeStatus Status { get; set; }
 
         public DateTime? PracticeDate { get; set; }
+
+        public int Count { get; set; }
     }
 }

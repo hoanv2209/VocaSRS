@@ -39,6 +39,7 @@ namespace VocaSRS.Controllers
         [HttpPost]
         public IActionResult Practice(PracticeRequestModel model)
         {
+            _service.LearningQuiz(model);
             return RedirectToAction("Practice");
         }
 
