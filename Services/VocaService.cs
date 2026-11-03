@@ -92,7 +92,7 @@ namespace VocaSRS.Services
                                 .Where(p => p.Status != PracticeStatus.Unseen
                                             && p.Status != PracticeStatus.Memorized
                                             && p.PracticeDate == today
-                                            && p.Count < 3)
+                                            && p.Count < 2)
                                 .OrderBy(p => p.Count)
                                 .ThenBy(p => Guid.NewGuid())
                                 .FirstOrDefault();
@@ -105,7 +105,7 @@ namespace VocaSRS.Services
             string[] options = _context.Vocabularies.Where(p => p != word)
                                     .OrderBy(p => Guid.NewGuid())
                                     .Take(3)
-                                    .Select(p => p.ForeignWord)
+                                    .Select(p => p.NativeWord)
                                     .ToArray();
 
             return new PracticeResponseModel
@@ -122,7 +122,7 @@ namespace VocaSRS.Services
             DateTime today = DateTime.UtcNow.Date;
             int practicedWordCount = _context.Vocabularies.Count(p => p.Status == PracticeStatus.First && p.PracticeDate == today);
 
-            if (practicedWordCount >= 50)
+            if (practicedWordCount >= 20)
             {
                 return null;
             }

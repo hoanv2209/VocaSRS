@@ -8,7 +8,8 @@
 	PracticeResponseModel vocabulary = ViewBag.Vocabulary;
 
 	string[] options = vocabulary?.Options ?? Array.Empty<string>();
-	string correctAnswer = vocabulary?.ForeignWord ?? "";
+	string correctAnswer = vocabulary?.NativeWord ?? "";
+	string foreignWord = vocabulary?.ForeignWord ?? "";
 
 	var wrongAnswers = options
 		.Where(x => !string.IsNullOrWhiteSpace(x))
@@ -291,7 +292,7 @@
 		<div class="question-label">WHAT DOES THIS WORD MEAN?</div>
 
 		<div class="native-word">
-			@Html.Raw(vocabulary?.NativeWord)
+			@Html.Raw(vocabulary?.ForeignWord)
 		</div>
 
 		<div class="answer-heading">
@@ -349,6 +350,7 @@
 		const progressBar = document.getElementById("progressBar");
 		const answerInput = document.getElementById("answerInput");
 		const correctAnswer = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(correctAnswer));
+		const foreignWord = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(foreignWord));
 		const resultElement = document.getElementById("answerResult");
 		const buttons = document.querySelectorAll(".answer-btn");
 
@@ -429,7 +431,7 @@
 				resultElement.className = "answer-result incorrect";
 			}
 
-			speakWord(correctAnswer);
+			speakWord(foreignWord);
 
 			// Cho người dùng nhìn thấy màu đúng/sai trước khi submit.
 			setTimeout(() => {
@@ -489,7 +491,7 @@
 				// Cho người dùng xem đáp án trước khi gửi form
 				submitted = true;
 
-				speakWord(correctAnswer);
+				speakWord(foreignWord);
 
 				setTimeout(() => {
 					submitAnswer("");

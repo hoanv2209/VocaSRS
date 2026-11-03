@@ -72,7 +72,7 @@
                     <span aria-hidden="true">🔊</span> Listen
                 </button>
 
-                <button type="submit" class="btn btn-primary" id="btnCheck">
+                <button class="btn btn-primary" id="btnCheck">
                     Check answer <span aria-hidden="true">→</span>
                 </button>
             </div>
@@ -525,6 +525,11 @@
 
             document.getElementById("btnRead").addEventListener("click", () => {
                 speakWord(target);
+            });
+
+            document.getElementById("btnCheck").addEventListener("click", (e) => {
+                e.preventDefault();
+                finish("Moving to the next word...", true);
             });
 
             form.addEventListener("submit", event => {
