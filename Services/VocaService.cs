@@ -67,7 +67,8 @@ namespace VocaSRS.Services
                                                 || (p.Status == PracticeStatus.Third && p.PracticeDate <= thirdBoxReviewDate)
                                                 || (p.Status == PracticeStatus.Fourth && p.PracticeDate <= fourthBoxReviewDate)
                                                 || (p.Status == PracticeStatus.Fifth && p.PracticeDate <= fifthBoxReviewDate))
-                                    .OrderBy(p => Guid.NewGuid())
+                                    .OrderByDescending(p => p.Status)
+                                    .ThenBy(p => Guid.NewGuid())
                                     .FirstOrDefault();
 
             if (word == null)
